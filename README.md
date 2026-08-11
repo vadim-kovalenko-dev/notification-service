@@ -1,155 +1,81 @@
 # Notification Service
 
-Веб-сервис управления пользователями WireGuard VPN с Telegram-уведомлениями и дашбордом.
+Управление пользователями WireGuard VPN с Telegram-уведомлениями и дашбордом.
 
 ## Стек
 
-- Bun + Hono (TypeScript)
-- Docker + Caddy (reverse proxy + автоматический SSL)
-- Telegram Bot API (прямые HTTP-запросы через curl)
-- Single-file HTML dashboard (GitHub Dark Primer тема)
+Bun + Hono (TypeScript), Docker + Caddy (SSL), Telegram Bot API (curl), single-file HTML dashboard.
 
 ## Структура
 
 ```
-notification-service/
-  src/
-    index.ts          — точка входа: Hono-сервер + cron (проверка подписок каждые 24ч)
-    bot.ts            — Telegram HTTP API: отправка сообщений, broadcast, уведомления
-    api/
-      routes.ts       — REST API: пользователи, оплата, уведомления, шаблоны, статистика
-    db/
-      index.ts        — работа с БД: чтение/запись JSON-файлов
-      types.ts        — TypeScript-типы (User, Payment, MessageTemplates и др.)
-  web/
-    dashboard.html    — фронтенд: дашборд, таблица пользователей, шаблоны сообщений
-  Caddyfile          — конфигурация Caddy (reverse proxy + SSL)
-  Dockerfile
-  docker-compose.yml
-  .env
+src/
+  index.ts        — вход: Hono + cron (подписки каждые 24ч)
+  bot.ts          — Telegram API: отправка, broadcast, уведомления
+  api/routes.ts   — REST API: пользователи, оплата, шаблоны, статистика
+  db/index.ts     — чтение/запись JSON-файлов
+  db/types.ts     — TypeScript-типы
+web/
+  dashboard.html  — фронтенд дашборда
+Caddyfile, Dockerfile, docker-compose.yml
 ```
 
 ## Файлы данных
 
-| Файл | Описание | Кто записывает |
-|---|---|---|
-| `database.json` | Пользователи, доступы, конфиги WireGuard | Основной бот (каждые 15 сек) |
-| `payments.json` | Оплата, тип (paid/free), имя пользователя | Notification-service |
-| `notification_log.json` | Лог отправленных уведомлений | Notification-service |
-| `message_templates.json` | Шаблоны: инструкция, оплата, рассылка | Notification-service |
-
-Notification-service **только читает** `database.json` (каждые 30 сек) и **не пишет** в него — конфликтов с основным ботом нет.
+| Файл | Описание |
+|---|---|
+| `database.json` | Пользователи, доступы, конфиги (чтение каждые 30 сек, **без записи**) |
+| `payments.json` | Оплата, тип (paid/free), имя |
+| `notification_log.json` | Лог отправленных уведомлений |
+| `message_templates.json` | Шаблоны сообщений |
 
 ## API
 
 | Метод | Эндпоинт | Описание |
 |---|---|---|
-| GET | `/api/users` | Список всех пользователей с трафиком, статусом оплаты и последней активностью |
-| GET | `/api/users/:id` | Данные конкретного пользователя |
-| POST | `/api/payments/:userId` | Создать/обновить оплату, отправить подтверждение |
+| GET | `/api/users` | Пользователи с трафиком, статусом, активностью |
+| POST | `/api/payments/:userId` | Создать/обновить оплату |
 | PATCH | `/api/payments/:userId` | Обновить дату или имя |
 | POST | `/api/users/:userId/type` | Переключить тип (paid/free) |
-| POST | `/api/notify/unpaid` | Уведомить просроченных платных пользователей |
-| POST | `/api/notify/:userId` | Уведомить конкретного пользователя |
-| POST | `/api/broadcast` | Рассылка всем пользователям |
-| GET | `/api/templates` | Получить шаблоны сообщений |
-| PATCH | `/api/templates` | Обновить шаблоны |
-| GET | `/api/stats` | Статистика (всего, платные, бесплатные, и т.д.) |
+| POST | `/api/notify/unpaid` | Уведомить просроченных |
+| POST | `/api/broadcast` | Рассылка всем |
+| GET/PATCH | `/api/templates` | Шаблоны сообщений |
+| GET | `/api/stats` | Статистика |
 
-Все эндпоинты требуют авторизацию: `Authorization: Bearer <WEB_SECRET>` или cookie `secret=<WEB_SECRET>`.
+Авторизация: `Authorization: Bearer <WEB_SECRET>` или cookie.
 
-## Веб-дашборд
+## Автоуведомления
 
-Доступен по адресу `https://securedatabridge.ru/`. Дизайн: GitHub Dark Primer тема.
-
-### Основная страница
-- Карточки-фильтры: Всего / Платные / Бесплатные
-- Таблица пользователей: Пользователь, Имя, Тип, Устройства, Трафик, Активность, Регистрация, Оплата до, Статус, Уведомление
-- Редактирование имени прямо в таблице (автосохранение с debounce 500мс)
-- Inline date picker для выбора даты оплаты
-- Кнопка колокольчика — отправка шаблона оплаты конкретному пользователю
-- Кнопка "Уведомить просроченных" — отправка шаблона оплаты платным пользователям с истёкшей подпиской
-- Кнопка "Рассылка" — отправка шаблона рассылки всем пользователям
-
-### Страница шаблонов
-- Три текстовых поля: Инструкция по подключению, Оплата, Рассылка
-- Поддержка HTML-тегов в сообщениях (parse_mode: HTML)
-- Моноширинный шрифт для удобства написания разметки
-
-## Cron
-
-- Каждые 24 часа: проверка подписок
-  - Подписка истекает через <=3 дней — напоминание
-  - Подписка истекла — уведомление об истечении
+| Событие | Шаблон | Когда |
+|---|---|---|
+| Новый пользователь | Инструкция | Первое появление в БД |
+| Первый трафик | Оплата | `totalRx > 0` при ранее `0` |
+| Истекает за3 дня | Напоминание | Каждый день в9:00, один раз |
+| Просрочка | Оплата | После окончания, один раз |
 
 ## Переменные окружения (.env)
 
 ```
-NOTIFICATION_BOT_TOKEN=   # Токен Telegram-бота (тот же что у основного бота)
-WEB_PORT=3000             # Порт веб-сервера (внутренний)
-WEB_SECRET=               # Пароль для доступа к дашборду
-DOMAIN=                   # Домен для Caddy (автоматический SSL)
+NOTIFICATION_BOT_TOKEN=   # Токен Telegram-бота
+WEB_PORT=3000
+WEB_SECRET=               # Пароль дашборда
+DOMAIN=                   # Домен для Caddy (SSL)
 ```
-
-## Лимиты Telegram
-
-- Задержка между сообщениями при рассылке: **200мс** (~5 сообщений/сек)
-- Лимит Telegram: ~30 сообщений/сек (глобальный)
-- При 429 ошибке (rate limit) сообщение пропускается (нет retry)
-- Блокировка пользователя = 403 ошибка, не влияет на лимиты
 
 ## Деплой
 
-### Локально
-
-```bash
-docker compose up -d --build
-```
-
-Дашборд: `http://localhost:3000` (только notification-service) или `http://localhost` (через Caddy)
-
-### На сервере
-
-1. Убедись что DNS `securedatabridge.ru` указывает на IP сервера
-
-2. Запусти:
 ```bash
 docker compose up -d
 ```
 
-Caddy автоматически:
-- Получит SSL-сертификат от Let's Encrypt
-- Настроит HTTPS
-- Будет продлять сертификат каждые 90 дней
+Caddy автоматически получит SSL-сертификат от Let's Encrypt.
 
-3. Проверь:
-```bash
-docker compose logs caddy
-```
-
-## Архитектура Docker
+## Docker
 
 ```
-┌─────────────────────────────────────────┐
-│  docker-compose.yml                     │
-│                                         │
-│  ┌─────────────┐    ┌────────────────┐  │
-│  │  notification│    │    Caddy       │  │
-│  │  -service    │    │  (SSL + proxy) │  │
-│  │  :3000       │◄───│  :80, :443     │  │
-│  │  (internal)  │    │                │  │
-│  └─────────────┘    └────────────────┘  │
-│                                         │
-│  Volumes:                               │
-│  - bot_data (read-only, от основного бота)│
-│  - notification_data                    │
-│  - caddy_data, caddy_config             │
-└─────────────────────────────────────────┘
+notification-service (:3000) ◄─── Caddy (:80, :443)
 ```
 
-- Порт 3000 **не публикуется** наружу — доступ только через Caddy
-- `bot_data` монтируется как **read-only** — notification-service не может повредить данные основного бота
-
-## Известные ограничения
-
-- Полное удаление пользователя невозможно только из notification-service — основной бот держит `database.json` в памяти и перезаписывает каждые 15 сек. Для удаления нужен HTTP-эндпоинт или admin-команда в основном боте.
+- bot_data — read-only, от основного бота
+- notification_data — свои данные
+- Порт 3000 не публикуется наружу
