@@ -29,20 +29,9 @@ Caddyfile, Dockerfile, docker-compose.yml
 | `notification_log.json` | Лог отправленных уведомлений |
 | `message_templates.json` | Шаблоны сообщений |
 
-## API
+## Дашборд
 
-| Метод | Эндпоинт | Описание |
-|---|---|---|
-| GET | `/api/users` | Пользователи с трафиком, статусом, активностью |
-| POST | `/api/payments/:userId` | Создать/обновить оплату |
-| PATCH | `/api/payments/:userId` | Обновить дату или имя |
-| POST | `/api/users/:userId/type` | Переключить тип (paid/free) |
-| POST | `/api/notify/unpaid` | Уведомить просроченных |
-| POST | `/api/broadcast` | Рассылка всем |
-| GET/PATCH | `/api/templates` | Шаблоны сообщений |
-| GET | `/api/stats` | Статистика |
-
-Авторизация: `Authorization: Bearer <WEB_SECRET>` или cookie.
+Дашборд доступен по адресу `https://your-domain.com/`. Вход по паролю из переменной `WEB_SECRET`.
 
 ## Автоуведомления
 
