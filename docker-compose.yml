@@ -1,7 +1,7 @@
 volumes:
   bot_data:
     external: true
-    name: wireguard-tg-fork-master_bot_data
+    name: wireguard-tg_bot_data
   notification_data:
   caddy_data:
   caddy_config:
