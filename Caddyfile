@@ -1,0 +1,3 @@
+{$DOMAIN} {
+    reverse_proxy notification-service:3000
+}

@@ -1,0 +1,17 @@
+{
+  "name": "wg-notification-service",
+  "version": "1.0.0",
+  "description": "Notification service + web dashboard for WireGuard bot",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.11.0",
+    "hono": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.0",
+    "typescript": "^5.5.0"
+  }
+}

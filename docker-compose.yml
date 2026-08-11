@@ -1,0 +1,40 @@
+volumes:
+  bot_data:
+    external: true
+    name: wireguard-tg-fork-master_bot_data
+  notification_data:
+  caddy_data:
+  caddy_config:
+
+services:
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wg-notifications
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - bot_data:/app/bot-data:ro
+      - notification_data:/app/data
+
+  caddy:
+    image: caddy:alpine
+    container_name: wg-caddy
+    restart: unless-stopped
+    environment:
+      - DOMAIN=${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - notification-service
