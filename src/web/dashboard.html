@@ -1,189 +1,296 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WireGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif;background:#f5f5f7;color:#1a1d26;min-height:100vh;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
-        .hidden{display:none!important}
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #f4f4f5;
+            --card: #ffffff;
+            --border: #e4e4e7;
+            --border-hover: #d4d4d8;
+            --fg: #18181b;
+            --fg-muted: #71717a;
+            --fg-dim: #a1a1aa;
+            --primary: #18181b;
+            --primary-fg: #fafafa;
+            --green: #16a34a;
+            --green-bg: #f0fdf4;
+            --green-border: #bbf7d0;
+            --blue: #2563eb;
+            --blue-bg: #eff6ff;
+            --blue-border: #bfdbfe;
+            --amber: #d97706;
+            --amber-bg: #fffbeb;
+            --amber-border: #fde68a;
+            --red: #dc2626;
+            --red-bg: #fef2f2;
+            --red-border: #fecaca;
+            --violet: #7c3aed;
+            --violet-bg: #f5f3ff;
+            --violet-border: #ddd6fe;
+            --radius: 8px;
+            --radius-sm: 6px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .hidden { display: none !important; }
 
-        .login-page{position:fixed;inset:0;background:#f5f5f7;display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
-        .login-card{background:#fff;border:none;border-radius:16px;padding:40px 32px;width:100%;max-width:340px;text-align:center;box-shadow:0 4px 32px rgba(0,0,0,0.08)}
-        .login-card h1{font-size:22px;font-weight:600;margin-bottom:4px;color:#1a1d26}
-        .login-card p{font-size:13px;color:#9ca3af;margin-bottom:28px}
-        .login-card input{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#1a1d26;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;transition:border .2s,box-shadow .2s}
-        .login-card input:focus{border-color:#7c5cfc;box-shadow:0 0 0 3px rgba(124,92,252,0.15)}
-        .login-card input::placeholder{color:#9ca3af}
-        .login-card button{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#7c5cfc 0%,#9b7dff 100%);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .1s;box-shadow:0 2px 12px rgba(124,92,252,0.3)}
-        .login-card button:hover{opacity:.9}
-        .login-card button:active{transform:scale(0.98)}
+        /* Login */
+        .login-page { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .login-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px 32px; width: 100%; max-width: 320px; text-align: center; box-shadow: var(--shadow); }
+        .login-card h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.01em; }
+        .login-card p { font-size: 13px; color: var(--fg-muted); margin-bottom: 24px; }
+        .login-card input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--fg); font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px; transition: border-color 0.15s, box-shadow 0.15s; }
+        .login-card input:focus { border-color: #71717a; box-shadow: 0 0 0 3px rgba(113,113,122,0.1); }
+        .login-card input::placeholder { color: var(--fg-dim); }
+        .login-card button { width: 100%; padding: 9px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: var(--primary-fg); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+        .login-card button:hover { opacity: 0.9; }
+        .login-card button:active { transform: scale(0.98); }
 
-        .main{max-width:1400px;margin:0 auto;padding:28px 16px 80px}
-        .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-        .top h1{font-size:24px;font-weight:600;letter-spacing:-0.01em;color:#1a1d26}
-        .top-actions{display:flex;gap:8px;flex-wrap:wrap}
-        .btn{padding:8px 18px;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;line-height:20px}
-        .btn:active{transform:scale(0.97)}
-        .btn-ghost{background:transparent;color:#7c5cfc;border:1px solid #e5e7eb}
-        .btn-ghost:hover{background:rgba(124,92,252,0.06);border-color:#7c5cfc}
-        .btn-primary{background:linear-gradient(135deg,#7c5cfc 0%,#9b7dff 100%);color:#fff;border:none;box-shadow:0 2px 8px rgba(124,92,252,0.25)}
-        .btn-primary:hover{box-shadow:0 4px 12px rgba(124,92,252,0.35)}
-        .btn-orange{background:linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%);color:#fff;border:none;box-shadow:0 2px 8px rgba(245,158,11,0.25)}
-        .btn-orange:hover{box-shadow:0 4px 12px rgba(245,158,11,0.35)}
-        .btn-outline{background:transparent;color:#6b7280;border:1px solid #e5e7eb}
-        .btn-outline:hover{background:#f3f4f6;color:#1a1d26}
+        /* Layout */
+        .main { max-width: 1400px; margin: 0 auto; padding: 24px 20px 40px; }
+        .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+        .top h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+        .top-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
-        .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-        .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 18px;cursor:pointer;transition:all .2s;user-select:none;-webkit-user-select:none;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-        .card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06);border-color:#d1d5db}
-        .card.on{border-color:#7c5cfc;box-shadow:0 0 0 2px rgba(124,92,252,0.15),0 2px 8px rgba(124,92,252,0.1)}
-        .card .lbl{font-size:11px;color:#9ca3af;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.04em;font-weight:500}
-        .card .num{font-size:26px;font-weight:700;letter-spacing:-0.02em;color:#1a1d26}
-        .card.c-blue .num{color:#7c5cfc}
-        .card.c-green .num{color:#10b981}
-        .card.c-gray .num{color:#9ca3af}
+        /* Buttons */
+        .btn { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; line-height: 20px; border: 1px solid transparent; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary); color: var(--primary-fg); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-outline { background: var(--card); color: var(--fg-muted); border-color: var(--border); }
+        .btn-outline:hover { background: var(--bg); color: var(--fg); }
+        .btn-ghost { background: transparent; color: var(--fg-muted); }
+        .btn-ghost:hover { background: var(--bg); color: var(--fg); }
 
-        .list{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);display:flex;flex-direction:column;overflow:hidden}
-        .list-wrap{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;min-height:0}
-        table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:1100px}
-        col.c-user{width:14%}
-        col.c-name{width:12%}
-        col.c-type{width:10%}
-        col.c-dev{width:4%}
-        col.c-traffic{width:12%}
-        col.c-active{width:12%}
-        col.c-reg{width:10%}
-        col.c-until{width:13%}
-        col.c-status{width:9%}
-        col.c-bell{width:4%}
-        th{padding:12px 14px;font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;border-bottom:1px solid #f0f0f2;text-align:left;background:#fafafa}
-        td{padding:12px 14px;border-bottom:1px solid #f3f4f6;font-size:13px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
-        tr:last-child td{border-bottom:none}
-        tr:hover td{background:#f9fafb}
-        .empty-row td{text-align:center;color:#9ca3af;padding:40px 14px;font-size:13px}
+        /* Stat cards */
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 14px 16px; cursor: pointer; user-select: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+        }
+        .stat-card:hover { border-color: var(--border-hover); }
+        .stat-card.active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+        .stat-card .label { font-size: 12px; color: var(--fg-muted); font-weight: 500; margin-bottom: 4px; }
+        .stat-card .value { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
 
-        .u{display:flex;align-items:center;gap:10px;overflow:hidden}
-        .av{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;background:linear-gradient(135deg,#ede9fe 0%,#e0e7ff 100%);color:#7c5cfc}
-        .u-info{overflow:hidden}
-        .un{font-weight:500;font-size:13px;color:#1a1d26;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .uid{font-size:10px;color:#9ca3af;font-family:'SF Mono',Menlo,monospace}
+        /* Table */
+        .table-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            padding: 10px 12px; font-size: 11px; color: var(--fg-muted); font-weight: 500;
+            text-align: left; background: var(--bg); border-bottom: 1px solid var(--border);
+            text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; position: sticky; top: 0; z-index: 1;
+        }
+        tbody td {
+            padding: 10px 12px; border-bottom: 1px solid var(--border);
+            font-size: 13px; vertical-align: middle; height: 48px;
+            transition: background 0.1s ease;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: #fafafa; }
+        .empty-row td { text-align: center; color: var(--fg-muted); padding: 40px 12px; height: auto; }
 
-        .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.01em;cursor:pointer;transition:opacity .15s;line-height:1.5;white-space:nowrap}
-        .tag:active{opacity:.7}
-        .tag-a{background:#ecfdf5;color:#10b981}
-        .tag-e{background:#fffbeb;color:#f59e0b}
-        .tag-x{background:#fef2f2;color:#ef4444}
-        .tag-n{background:#f3e8ff;color:#9333ea}
-        .tag-p{background:#ecfdf5;color:#10b981}
-        .tag-f{background:#f3f4f6;color:#9ca3af}
+        /* Fade transition for table body */
+        .fade-target { transition: opacity 0.12s ease; }
+        .fade-target.fade-out { opacity: 0.3; }
 
-        .name-input{border:none;background:transparent;font-size:12px;font-family:inherit;color:#6b7280;padding:4px 6px;border-radius:6px;width:100%;outline:none;transition:background .15s}
-        .name-input:focus{background:#f9fafb;color:#1a1d26}
-        .name-input::placeholder{color:#9ca3af}
+        /* User cell */
+        .user-cell { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .avatar {
+            width: 32px; height: 32px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 600; flex-shrink: 0;
+            background: var(--bg); color: var(--fg-muted);
+        }
+        .user-info { overflow: hidden; min-width: 0; }
+        .user-name { font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-id { font-size: 11px; color: var(--fg-dim); font-family: 'SF Mono', Menlo, monospace; }
 
-        .date-btn{cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;transition:background .15s;border:none;background:transparent;font-family:inherit;color:#6b7280;white-space:nowrap}
-        .date-btn:hover{background:#f3f4f6}
-        .date-btn.em{color:#d1d5db}
+        /* Badges */
+        .badge {
+            display: inline-flex; align-items: center; padding: 2px 8px;
+            border-radius: 9999px; font-size: 11px; font-weight: 500;
+            white-space: nowrap; line-height: 1.5; border: 1px solid transparent;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .badge-active { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+        .badge-expiring { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-border); }
+        .badge-expired { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+        .badge-noaccess { background: var(--violet-bg); color: var(--violet); border-color: var(--violet-border); }
+        .badge-paid { background: var(--green-bg); color: var(--green); border-color: var(--green-border); cursor: pointer; }
+        .badge-paid:hover { background: #dcfce7; }
+        .badge-free { background: var(--blue-bg); color: var(--blue); border-color: var(--blue-border); cursor: pointer; }
+        .badge-free:hover { background: #dbeafe; }
 
-        .ib{width:30px;height:30px;border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;background:transparent;color:#9ca3af;cursor:pointer;flex-shrink:0;transition:all .15s}
-        .ib:hover{background:#f3f4f6;color:#7c5cfc}
-        .ib svg{width:15px;height:15px}
+        /* Inputs */
+        .name-input {
+            border: 1px solid transparent; background: transparent; font-size: 13px;
+            font-family: inherit; color: var(--fg-muted); padding: 4px 6px;
+            border-radius: 4px; width: 100%; outline: none; transition: all 0.15s;
+        }
+        .name-input:hover { background: var(--bg); }
+        .name-input:focus { background: var(--card); color: var(--fg); border-color: var(--border); box-shadow: 0 0 0 2px rgba(113,113,122,0.08); }
+        .name-input::placeholder { color: var(--fg-dim); }
 
-        .dp-pop{position:fixed;z-index:200;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;width:250px;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.1)}
-        .dp-pop.on{display:block;animation:dpIn .15s ease-out}
-        @keyframes dpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-        .dp-row{display:flex;gap:6px;margin-bottom:12px}
-        .dp-row select{flex:1;padding:8px 4px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;font-size:12px;font-family:inherit;color:#1a1d26;outline:none;-webkit-appearance:none;appearance:none;text-align:center;cursor:pointer;transition:border-color .15s}
-        .dp-row select:focus{border-color:#7c5cfc}
-        .dp-acts{display:flex;gap:6px;justify-content:flex-end}
-        .dp-acts button{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent}
-        .dp-acts .dp-cancel{background:#f3f4f6;color:#6b7280;border-color:#e5e7eb}
-        .dp-acts .dp-cancel:hover{background:#e5e7eb}
-        .dp-acts .dp-ok{background:linear-gradient(135deg,#7c5cfc 0%,#9b7dff 100%);color:#fff;border:none;box-shadow:0 2px 6px rgba(124,92,252,0.25)}
-        .dp-acts .dp-ok:hover{box-shadow:0 4px 10px rgba(124,92,252,0.35)}
-        .dp-acts .dp-clear{background:transparent;color:#ef4444;margin-right:auto;border-color:transparent}
-        .dp-acts .dp-clear:hover{background:#fef2f2}
+        .date-btn {
+            cursor: pointer; padding: 3px 8px; border-radius: 4px; font-size: 12px;
+            transition: background 0.15s; border: 1px solid transparent;
+            background: transparent; font-family: inherit; color: var(--fg-muted); white-space: nowrap;
+        }
+        .date-btn:hover { background: var(--bg); }
+        .date-btn.empty { color: var(--border); }
 
-        .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-        .modal-ov.off{display:none}
-        .modal-box{background:#fff;border:none;border-radius:16px;padding:28px;width:100%;max-width:420px;box-shadow:0 16px 48px rgba(0,0,0,0.12)}
-        .modal-box h3{font-size:18px;font-weight:600;margin-bottom:18px;color:#1a1d26}
-        .modal-box textarea{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#1a1d26;font-size:13px;font-family:inherit;outline:none;margin-bottom:8px;min-height:100px;resize:vertical;transition:border-color .2s}
-        .modal-box textarea:focus{border-color:#7c5cfc;box-shadow:0 0 0 3px rgba(124,92,252,0.1)}
-        .modal-box textarea::placeholder{color:#9ca3af}
-        .modal-box .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-        .modal-box .row button{padding:8px 18px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid transparent}
-        .modal-box .row .c{background:#f3f4f6;color:#6b7280;border-color:#e5e7eb}
-        .modal-box .row .c:hover{background:#e5e7eb}
-        .modal-box .row .s{background:linear-gradient(135deg,#7c5cfc 0%,#9b7dff 100%);color:#fff;border:none;box-shadow:0 2px 6px rgba(124,92,252,0.25)}
-        .modal-box .row .s:hover{box-shadow:0 4px 10px rgba(124,92,252,0.35)}
-        .preview{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;font-size:13px;min-height:40px;margin-bottom:12px;line-height:1.5;color:#6b7280}
+        .icon-btn {
+            width: 30px; height: 30px; border: 1px solid transparent; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            background: transparent; color: var(--fg-dim); cursor: pointer; flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .icon-btn:hover { background: var(--bg); color: var(--fg); }
+        .icon-btn svg { width: 15px; height: 15px; }
 
-        .tpl-page{max-width:700px;margin:0 auto;padding:28px 16px 80px}
-        .tpl-page h2{font-size:22px;font-weight:600;margin-bottom:24px;color:#1a1d26}
-        .tpl-section{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-        .tpl-section label{display:block;font-size:11px;color:#9ca3af;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.04em}
-        .tpl-section textarea{width:100%;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;color:#1a1d26;font-size:13px;font-family:'SF Mono',Menlo,monospace;outline:none;min-height:120px;resize:vertical;line-height:1.6;transition:border-color .2s,box-shadow .2s;scrollbar-width:thin;scrollbar-color:#ccc #f5f5f5}
-        .tpl-section textarea:focus{border-color:#7c5cfc;box-shadow:0 0 0 3px rgba(124,92,252,0.1)}
-        .tpl-section textarea::placeholder{color:#d1d5db;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
-        .tpl-section textarea::-webkit-scrollbar{width:5px;height:5px}
-        .tpl-section textarea::-webkit-scrollbar-track{background:#f5f5f5;border-radius:3px}
-        .tpl-section textarea::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
-        .tpl-section textarea::-webkit-scrollbar-thumb:hover{background:#aaa}
-        .tpl-save{display:flex;justify-content:flex-end;margin-top:18px}
-        .btn-save{padding:10px 24px;font-size:13px;font-weight:600;border-radius:10px}
+        /* Pagination */
+        .pager {
+            display: flex; align-items: center; justify-content: center;
+            gap: 4px; padding: 10px 12px;
+            border-top: 1px solid var(--border); background: var(--card);
+        }
+        .pager button {
+            min-width: 30px; height: 30px; border-radius: var(--radius-sm);
+            border: 1px solid var(--border); background: var(--card);
+            color: var(--fg-muted); font-size: 13px; font-weight: 500;
+            cursor: pointer; font-family: inherit; transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center; padding: 0 6px;
+        }
+        .pager button:hover:not(.active):not(:disabled) { border-color: var(--border-hover); color: var(--fg); }
+        .pager button.active { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .pager button:disabled { opacity: 0.3; cursor: default; }
+        .pager .pg-info { font-size: 12px; color: var(--fg-dim); margin: 0 4px; white-space: nowrap; }
 
-        .pager{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 0;border-top:1px solid #f3f4f6;flex-shrink:0;background:#fff;border-radius:0 0 12px 12px}
-        .pager button{width:32px;height:32px;border-radius:8px;border:1px solid #e5e7eb;background:#fff;color:#6b7280;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center}
-        .pager button:hover{border-color:#7c5cfc;color:#7c5cfc}
-        .pager button.active{background:linear-gradient(135deg,#7c5cfc 0%,#9b7dff 100%);color:#fff;border-color:transparent;box-shadow:0 2px 6px rgba(124,92,252,0.25)}
-        .pager button:disabled{opacity:.3;cursor:default;border-color:#e5e7eb;color:#d1d5db}
-        .pager .pg-info{font-size:11px;color:#9ca3af;margin:0 8px}
+        /* Date picker */
+        .dp-pop { position: fixed; z-index: 200; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; width: 270px; display: none; box-shadow: var(--shadow); }
+        .dp-pop.on { display: block; }
+        .dp-row { display: flex; gap: 6px; margin-bottom: 10px; }
+        .dp-row select { flex: 1; padding: 7px 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); font-size: 13px; font-family: inherit; color: var(--fg); outline: none; appearance: none; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+        .dp-row select:focus { border-color: #71717a; }
+        .dp-acts { display: flex; gap: 6px; justify-content: flex-end; }
+        .dp-acts button { padding: 6px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid transparent; transition: all 0.15s; }
+        .dp-cancel { background: var(--bg); color: var(--fg-muted); border-color: var(--border) !important; }
+        .dp-cancel:hover { background: var(--border); }
+        .dp-ok { background: var(--primary); color: var(--primary-fg) !important; }
+        .dp-ok:hover { opacity: 0.9; }
+        .dp-clear { background: transparent !important; color: var(--red) !important; margin-right: auto; }
+        .dp-clear:hover { background: var(--red-bg); }
 
-        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:12px;font-weight:500;z-index:300;animation:tIn .2s;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.1)}
-        .toast.ok{background:#fff;color:#1a1d26;border:1px solid #e5e7eb}
-        .toast.err{background:#fef2f2;color:#ef4444;border:1px solid #fecaca}
-        @keyframes tIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        /* Template page */
+        .tpl-page { max-width: 600px; margin: 0 auto; padding: 28px 20px 60px; }
+        .tpl-page h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+        .tpl-sub { font-size: 13px; color: var(--fg-muted); margin-bottom: 28px; }
+        .tpl-grid { display: flex; flex-direction: column; gap: 16px; }
+        .tpl-card { }
+        .tpl-card-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+        .tpl-card textarea {
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--card); color: var(--fg); font-size: 13px;
+            font-family: 'SF Mono', Menlo, monospace; outline: none;
+            min-height: 120px; resize: vertical; line-height: 1.6;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .tpl-card textarea:focus { border-color: #71717a; box-shadow: 0 0 0 2px rgba(113,113,122,0.08); }
+        .tpl-card textarea::placeholder { color: var(--fg-dim); font-family: 'Inter', sans-serif; }
+        .tpl-card + .tpl-card { padding-top: 16px; border-top: 1px solid var(--border); }
 
-        .toggle-wrap{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;transition:all .15s;user-select:none;-webkit-user-select:none}
-        .toggle-wrap:hover{border-color:#d1d5db}
-        .toggle-wrap .toggle-label{font-size:12px;font-weight:500;color:#6b7280}
-        .toggle-wrap.on{border-color:#10b981;background:#ecfdf5}
-        .toggle-wrap.on .toggle-label{color:#10b981}
+        /* Toggle */
+        .toggle-wrap {
+            display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+            border-radius: var(--radius-sm); border: 1px solid var(--border);
+            background: var(--card); cursor: pointer; transition: all 0.15s; user-select: none;
+        }
+        .toggle-wrap:hover { border-color: var(--border-hover); }
+        .toggle-label { font-size: 12px; font-weight: 500; color: var(--fg-muted); }
+        .toggle-wrap.on { border-color: var(--green); background: var(--green-bg); }
+        .toggle-wrap.on .toggle-label { color: var(--green); }
 
-        ::-webkit-scrollbar{width:6px;height:6px}
-        ::-webkit-scrollbar-track{background:transparent}
-        ::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:3px}
-        ::-webkit-scrollbar-thumb:hover{background:#d1d5db}
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px;
+            font-weight: 500; z-index: 300; pointer-events: none;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+        }
+        .toast.ok { background: var(--card); color: var(--fg); }
+        .toast.err { background: var(--red); color: #fff; border-color: var(--red); }
 
-        @media(max-width:640px){
-            .main,.tpl-page{padding:16px 12px 80px}
-            .top{gap:8px;margin-bottom:16px}
-            .top h1{font-size:20px}
-            .top-actions{gap:4px}
-            .btn{padding:6px 12px;font-size:11px}
-            .cards{gap:8px;margin-bottom:16px}
-            .card{padding:12px 10px}
-            .card .lbl{font-size:9px}
-            .card .num{font-size:20px}
-            .list{margin:0 -12px;border-radius:0;min-width:0}
-            th{padding:10px 8px;font-size:9px;letter-spacing:0.04em}
-            td{padding:10px 8px;font-size:11px}
-            .av{width:26px;height:26px;font-size:9px;border-radius:8px}
-            .un{font-size:11px}
-            .uid{font-size:9px}
-            .tag{font-size:9px;padding:2px 6px}
-            .date-btn{font-size:10px}
-            .ib{width:26px;height:26px}
-            .ib svg{width:13px;height:13px}
-            .dp-pop{width:220px;padding:12px}
-            .dp-row select{padding:6px 3px;font-size:11px}
-            .dp-acts button{padding:5px 10px;font-size:10px}
-            .modal-box{padding:18px;max-width:100%}
-            .tpl-section{padding:14px}
-            .tpl-section textarea{min-height:100px;font-size:12px;padding:10px 12px}
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            .main { padding: 14px 10px 40px; }
+            .top { gap: 6px; margin-bottom: 12px; }
+            .top h1 { font-size: 18px; }
+            .top-actions { gap: 4px; }
+            .btn { padding: 5px 10px; font-size: 11px; }
+
+            .cards { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 12px; }
+            .stat-card { padding: 10px 12px; }
+            .stat-card .label { font-size: 11px; }
+            .stat-card .value { font-size: 20px; }
+
+            .table-scroll { overflow-x: auto; }
+            table { table-layout: fixed; width: 100%; min-width: 920px; border-collapse: collapse; }
+            colgroup col:nth-child(1) { width: 16% !important; }  /* Пользователь */
+            colgroup col:nth-child(2) { width: 12% !important; }  /* Имя */
+            colgroup col:nth-child(3) { width: 11% !important; }  /* Тип */
+            colgroup col:nth-child(4) { width: 5% !important; }   /* Устр. */
+            colgroup col:nth-child(5) { width: 17% !important; }  /* Трафик */
+            colgroup col:nth-child(6) { width: 14% !important; }  /* Активность */
+            colgroup col:nth-child(7) { width: 0 !important; display: none; }  /* Регистрация — скрыта */
+            colgroup col:nth-child(8) { width: 13% !important; }  /* Оплата до */
+            colgroup col:nth-child(9) { width: 9% !important; }  /* Статус */
+            colgroup col:nth-child(10) { width: 3% !important; }  /* колокольчик */
+            thead th { padding: 10px 8px; font-size: 11px; white-space: nowrap; }
+            tbody td { padding: 10px 8px; font-size: 11px; white-space: nowrap; }
+            thead th:nth-child(7) { display: none; }
+            tbody td:nth-child(7) { display: none; }
+            .user-cell { min-width: 0; gap: 8px; }
+            .avatar { width: 28px; height: 28px; font-size: 10px; flex-shrink: 0; }
+            .user-name { font-size: 11px; }
+            .user-id { font-size: 10px; }
+            .badge { font-size: 11px; padding: 2px 8px; }
+            .date-btn { font-size: 11px; padding: 2px 6px; }
+            .icon-btn { width: 26px; height: 26px; }
+            .icon-btn svg { width: 13px; height: 13px; }
+            .name-input { font-size: 11px; padding: 2px 4px; }
+
+            .pager { padding: 8px; gap: 3px; }
+            .pager button { min-width: 26px; height: 26px; font-size: 11px; padding: 0 5px; }
+            .pager .pg-info { font-size: 10px; margin: 0 2px; }
+
+            .dp-pop { width: 230px; padding: 10px; }
+            .tpl-page { padding: 16px 12px 40px; }
+            .tpl-page h2 { font-size: 18px; margin-bottom: 4px; }
+            .tpl-sub { font-size: 12px; margin-bottom: 20px; }
+            .tpl-card-name { font-size: 12px; margin-bottom: 6px; }
+            .tpl-card textarea { min-height: 90px; font-size: 12px; padding: 8px 10px; }
         }
     </style>
 </head>
@@ -213,52 +320,68 @@
     </div>
 
     <div class="cards">
-        <div class="card c-blue on" id="cAll" onclick="filt('all')"><div class="lbl">Всего</div><div class="num" id="sT">-</div></div>
-        <div class="card c-green" id="cPaid" onclick="filt('paid')"><div class="lbl">Платные</div><div class="num" id="sP">-</div></div>
-        <div class="card c-gray" id="cFree" onclick="filt('free')"><div class="lbl">Бесплатные</div><div class="num" id="sF">-</div></div>
+        <div class="stat-card active" id="cAll" onclick="filt('all')">
+            <div class="label">Всего</div><div class="value" id="sT">-</div>
+        </div>
+        <div class="stat-card" id="cPaid" onclick="filt('paid')">
+            <div class="label">Платные</div><div class="value" id="sP">-</div>
+        </div>
+        <div class="stat-card" id="cFree" onclick="filt('free')">
+            <div class="label">Бесплатные</div><div class="value" id="sF">-</div>
+        </div>
+        <div class="stat-card" id="cNoAccess" onclick="filt('noaccess')">
+            <div class="label">Без доступа</div><div class="value" id="sNA">-</div>
+        </div>
     </div>
 
-    <div class="list">
-        <div class="list-wrap">
-        <table>
-            <colgroup>
-                <col class="c-user"><col class="c-name"><col class="c-type"><col class="c-dev">
-                <col class="c-traffic"><col class="c-active"><col class="c-reg"><col class="c-until"><col class="c-status"><col class="c-bell">
-            </colgroup>
-            <thead><tr>
-                <th>Пользователь</th><th>Имя</th><th>Тип</th><th>Устр.</th>
-                <th>Трафик</th><th>Активность</th><th>Регистрация</th><th>Оплата до</th><th>Статус</th><th></th>
-            </tr></thead>
-            <tbody id="tb"></tbody>
-        </table>
+    <div class="table-card">
+        <div class="table-scroll">
+            <table>
+                <colgroup>
+                    <col style="width:16%"><col style="width:11%"><col style="width:9%"><col style="width:5%">
+                    <col style="width:12%"><col style="width:12%"><col style="width:9%"><col style="width:11%">
+                    <col style="width:9%"><col style="width:6%">
+                </colgroup>
+                <thead><tr>
+                    <th>Пользователь</th><th>Имя</th><th>Тип</th><th>Устр.</th>
+                    <th>Трафик</th><th>Активность</th><th>Регистрация</th><th>Оплата до</th><th>Статус</th><th></th>
+                </tr></thead>
+                <tbody id="tb" class="fade-target"></tbody>
+            </table>
         </div>
-    <div class="pager" id="pager"></div>
+        <div class="pager" id="pager"></div>
     </div>
 </div>
 
 <div class="tpl-page hidden" id="tp">
     <div class="top">
-        <h2>Шаблоны сообщений</h2>
+        <div>
+            <h2>Шаблоны</h2>
+            <div class="tpl-sub">Тексты сообщений</div>
+        </div>
         <div class="top-actions">
-            <button class="btn btn-primary" onclick="saveTpl()">Сохранить шаблоны</button>
             <button class="btn btn-ghost" onclick="showMain()">Назад</button>
+            <button class="btn btn-primary" onclick="saveTpl()">Сохранить</button>
         </div>
     </div>
-    <div class="tpl-section">
-        <label>Инструкция по подключению</label>
-        <textarea id="tInst" placeholder="Текст инструкции..."></textarea>
-    </div>
-    <div class="tpl-section">
-        <label>Уведомление об оплате</label>
-        <textarea id="tPay" placeholder="Текст уведомления..."></textarea>
-    </div>
-    <div class="tpl-section">
-        <label>Напоминание за 3 дня</label>
-        <textarea id="tExpRem" placeholder="Текст напоминания об истечении подписки..."></textarea>
-    </div>
-    <div class="tpl-section">
-        <label>Рассылка</label>
-        <textarea id="tBc" placeholder="Текст рассылки..."></textarea>
+
+    <div class="tpl-grid">
+        <div class="tpl-card">
+            <span class="tpl-card-name">Инструкция по подключению</span>
+            <textarea id="tInst" placeholder="Текст инструкции..."></textarea>
+        </div>
+        <div class="tpl-card">
+            <span class="tpl-card-name">Уведомление об оплате</span>
+            <textarea id="tPay" placeholder="Текст уведомления..."></textarea>
+        </div>
+        <div class="tpl-card">
+            <span class="tpl-card-name">Напоминание за 3 дня</span>
+            <textarea id="tExpRem" placeholder="Текст напоминания..."></textarea>
+        </div>
+        <div class="tpl-card">
+            <span class="tpl-card-name">Рассылка</span>
+            <textarea id="tBc" placeholder="Текст рассылки..."></textarea>
+        </div>
     </div>
 </div>
 
@@ -275,14 +398,58 @@
     </div>
 </div>
 
-
 <script>
 let T="",US=[],FL="all",DP_ID=null,TPLS={instruction:"",payment:"",broadcast:""},SETTINGS={autoNotificationsEnabled:false},PAGE=1,PER_PAGE=10;
-const AC=["b","g","p"];
 const MO_FULL=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
-
-function avC(id){return AC[id%3]}
 function ini(n,id){return n?n.substring(0,2).toUpperCase():String(id).slice(-2)}
+
+const MOCK_USERS=[
+{id:1,username:"ivan_petrov",name:"Иван Петров",type:"paid",configCount:2,totalRx:5368709120,totalTx:2147483648,lastActiveAt:"2026-08-18T10:30:00Z",accessGrantedAt:"2026-01-15T12:00:00Z",paidUntil:"2026-09-15T00:00:00Z",status:"active",hasAccess:true},
+{id:2,username:"anna_kozlova",name:"Анна Козлова",type:"paid",configCount:1,totalRx:1073741824,totalTx:536870912,lastActiveAt:"2026-08-17T18:45:00Z",accessGrantedAt:"2026-02-20T09:00:00Z",paidUntil:"2026-08-25T00:00:00Z",status:"expiring",hasAccess:true},
+{id:3,username:"sergey_ivanov",name:"Сергей Иванов",type:"paid",configCount:3,totalRx:21474836480,totalTx:8589934592,lastActiveAt:"2026-08-18T14:20:00Z",accessGrantedAt:"2025-11-10T11:00:00Z",paidUntil:"2026-12-10T00:00:00Z",status:"active",hasAccess:true},
+{id:4,username:"maria_smirnova",name:"Мария Смирнова",type:"free",configCount:0,totalRx:0,totalTx:0,lastActiveAt:null,accessGrantedAt:null,paidUntil:null,status:"unpaid",hasAccess:false},
+{id:5,username:"dmitry_volkov",name:"Дмитрий Волков",type:"paid",configCount:2,totalRx:4294967296,totalTx:1073741824,lastActiveAt:"2026-08-16T09:10:00Z",accessGrantedAt:"2026-03-01T08:00:00Z",paidUntil:"2026-08-10T00:00:00Z",status:"expired",hasAccess:true},
+{id:6,username:"elena_popova",name:"Елена Попова",type:"paid",configCount:1,totalRx:8589934592,totalTx:3221225472,lastActiveAt:"2026-08-18T11:05:00Z",accessGrantedAt:"2026-04-12T14:00:00Z",paidUntil:"2026-10-12T00:00:00Z",status:"active",hasAccess:true},
+{id:7,username:"alex_kuznetsov",name:"Алексей Кузнецов",type:"free",configCount:1,totalRx:268435456,totalTx:134217728,lastActiveAt:"2026-08-15T16:30:00Z",accessGrantedAt:"2026-06-01T10:00:00Z",paidUntil:null,status:"unpaid",hasAccess:true},
+{id:8,username:"natalya_lebedeva",name:"Наталья Лебедева",type:"paid",configCount:2,totalRx:1610612736,totalTx:805306368,lastActiveAt:"2026-08-18T08:50:00Z",accessGrantedAt:"2026-05-20T16:00:00Z",paidUntil:"2026-08-20T00:00:00Z",status:"expiring",hasAccess:true},
+{id:9,username:"pavel_mikhailov",name:"Павел Михайлов",type:"paid",configCount:1,totalRx:3221225472,totalTx:1610612736,lastActiveAt:"2026-08-17T20:15:00Z",accessGrantedAt:"2026-01-05T13:00:00Z",paidUntil:"2027-01-05T00:00:00Z",status:"active",hasAccess:true},
+{id:10,username:"olga_sokolova",name:"Ольга Соколова",type:"free",configCount:0,totalRx:0,totalTx:0,lastActiveAt:null,accessGrantedAt:null,paidUntil:null,status:"unpaid",hasAccess:false},
+{id:11,username:"andrey_morozov",name:"Андрей Морозов",type:"paid",configCount:2,totalRx:7516192768,totalTx:2684354560,lastActiveAt:"2026-08-18T12:40:00Z",accessGrantedAt:"2026-06-15T09:00:00Z",paidUntil:"2026-09-15T00:00:00Z",status:"active",hasAccess:true},
+{id:12,username:"irina_novikova",name:"Ирина Новикова",type:"paid",configCount:1,totalRx:536870912,totalTx:268435456,lastActiveAt:"2026-08-14T07:20:00Z",accessGrantedAt:"2026-03-10T11:00:00Z",paidUntil:"2026-08-05T00:00:00Z",status:"expired",hasAccess:true},
+{id:13,username:"nikolay_fedorov",name:"Николай Федоров",type:"free",configCount:1,totalRx:134217728,totalTx:67108864,lastActiveAt:"2026-08-13T14:55:00Z",accessGrantedAt:"2026-07-01T08:00:00Z",paidUntil:null,status:"unpaid",hasAccess:true},
+{id:14,username:"tatyana_romanova",name:"Татьяна Романова",type:"paid",configCount:1,totalRx:4294967296,totalTx:1073741824,lastActiveAt:"2026-08-18T15:00:00Z",accessGrantedAt:"2026-07-20T15:00:00Z",paidUntil:"2026-11-20T00:00:00Z",status:"active",hasAccess:true},
+{id:15,username:"viktor_orlov",name:"Виктор Орлов",type:"paid",configCount:3,totalRx:12884901888,totalTx:5368709120,lastActiveAt:"2026-08-18T13:10:00Z",accessGrantedAt:"2025-12-01T10:00:00Z",paidUntil:"2026-12-01T00:00:00Z",status:"active",hasAccess:true}
+];
+const MOCK_TPLS={instruction:"Здравствуйте! Вот ваша инструкция по подключению к VPN.",payment:"Здравствуйте! Ваша подписка скоро истекает. Пожалуйста, продлите оплату.",expiryReminder:"Напоминание: ваша подписка истекает через 3 дня.",broadcast:"Дорогие пользователи! У нас новости."};
+const MOCK_SETTINGS={autoNotificationsEnabled:false};
+const MOCK_STATS={total:15,paid:11,unpaid:4};
+
+let _useMock=false;
+const _origFetch=window.fetch;
+window.fetch=function(url,opts){
+    if(_useMock)return _mockFetch(url,opts);
+    return _origFetch(url,opts).catch(e=>{_useMock=true;return _mockFetch(url,opts)});
+};
+function _mockFetch(url,opts){
+    return new Promise(r=>{
+        setTimeout(()=>{
+            const u=typeof url==="string"?url:url.url;
+            const m=(opts&&opts.method)||"GET";
+            if(u==="/api/stats")return r({ok:true,json:()=>Promise.resolve(MOCK_STATS)});
+            if(u==="/api/users"&&m==="GET")return r({ok:true,json:()=>Promise.resolve([...MOCK_USERS])});
+            if(u==="/api/templates"&&m==="GET")return r({ok:true,json:()=>Promise.resolve({...MOCK_TPLS})});
+            if(u==="/api/templates"&&m==="PATCH")return r({ok:true,json:()=>Promise.resolve({ok:true})});
+            if(u==="/api/settings"&&m==="GET")return r({ok:true,json:()=>Promise.resolve({...MOCK_SETTINGS})});
+            if(u==="/api/settings"&&m==="PATCH")return r({ok:true,json:()=>Promise.resolve({settings:{...MOCK_SETTINGS,autoNotificationsEnabled:!MOCK_SETTINGS.autoNotificationsEnabled}})});
+            if(u.match(/\/api\/notify\//))return r({ok:true,json:()=>Promise.resolve({ok:true})});
+            if(u==="/api/notify/unpaid")return r({ok:true,json:()=>Promise.resolve({sent:3,total:5})});
+            if(u==="/api/broadcast")return r({ok:true,json:()=>Promise.resolve({sent:12,total:15})});
+            if(u.match(/\/api\/payments\//))return r({ok:true,json:()=>Promise.resolve({ok:true})});
+            if(u.match(/\/api\/users\/\d+\/type/))return r({ok:true,json:()=>Promise.resolve({ok:true})});
+            r({ok:true,json:()=>Promise.resolve({})});
+        },50);
+    });
+}
 
 function login(){
     const p=document.getElementById("lpw").value;if(p)T=p;
@@ -294,31 +461,45 @@ function login(){
 }
 function logout(){T="";document.cookie="s=;path=/;max-age=0";document.getElementById("app").classList.add("hidden");document.getElementById("lp").classList.remove("hidden")}
 function api(p,o={}){return fetch(p,{...o,headers:{Authorization:"Bearer "+T,"Content-Type":"application/json",...o.headers}}).then(r=>r.json())}
-function uS(d){document.getElementById("sT").textContent=d.total||0;document.getElementById("sP").textContent=d.paid||0;document.getElementById("sF").textContent=d.unpaid||0}
-async function lU(){US=await api("/api/users");render();document.getElementById("sT").textContent=US.length;document.getElementById("sP").textContent=US.filter(u=>u.type==="paid").length;document.getElementById("sF").textContent=US.filter(u=>u.type==="free").length}
+function uS(d){document.getElementById("sT").textContent=d.total||0;document.getElementById("sP").textContent=d.paid||0;document.getElementById("sF").textContent=d.unpaid||0;document.getElementById("sNA").textContent=d.noAccess||0}
+async function lU(){US=await api("/api/users");render();document.getElementById("sT").textContent=US.length;document.getElementById("sP").textContent=US.filter(u=>u.type==="paid"&&u.hasAccess).length;document.getElementById("sF").textContent=US.filter(u=>u.type==="free"&&u.hasAccess).length;document.getElementById("sNA").textContent=US.filter(u=>!u.hasAccess).length}
 
 function filt(f){
     FL=f;PAGE=1;
-    document.querySelectorAll(".card").forEach(c=>c.classList.remove("on"));
-    document.getElementById(f==="all"?"cAll":f==="paid"?"cPaid":"cFree").classList.add("on");
-    render();
+    document.querySelectorAll(".stat-card").forEach(c=>c.classList.remove("active"));
+    document.getElementById(f==="all"?"cAll":f==="paid"?"cPaid":f==="free"?"cFree":"cNoAccess").classList.add("active");
+    fadeRender();
 }
 
 function fmtB(b){if(!b)return"0";const u=["B","KB","MB","GB","TB"];const i=Math.floor(Math.log(b)/Math.log(1024));return(b/Math.pow(1024,i)).toFixed(i>0?1:0)+" "+u[i]}
 function fmtD(iso){if(!iso)return"";return new Date(iso).toLocaleDateString("ru-RU",{day:"2-digit",month:"2-digit",year:"numeric"})}
 function fmtDT(iso){if(!iso)return"";return new Date(iso).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})}
 function fmtActive(iso){
-    if(!iso)return`<span style="color:#484f58">-</span>`;
+    if(!iso)return`<span style="color:var(--fg-dim)">-</span>`;
     const d=new Date(iso);const now=new Date();const diff=now.getTime()-d.getTime();
     const days=Math.floor(diff/(1000*60*60*24));
-    const color=days<=7?"#3fb950":"#484f58";
-    return`<span style="color:${color};font-size:11px">${fmtDT(iso)}</span>`;
+    const color=days<=7?"var(--green)":"var(--fg-dim)";
+    return`<span style="color:${color};font-size:12px">${fmtDT(iso)}</span>`;
+}
+
+function buildRows(users){
+    const ss=s=>{const m={paid:["Активен","badge-active"],active:["Активен","badge-active"],expiring:["Истекает","badge-expiring"],expired:["Просрочен","badge-expired"],unpaid:["Без оплаты","badge-expired"]};const[l,c]=m[s]||["-","badge-free"];return`<span class="badge ${c}">${l}</span>`};
+    const tg=(t,id,acc)=>{if(!acc){const c=t==="paid"?"badge-paid":"badge-free";return`<span class="badge ${c}">${t==="paid"?"Платный":"Бесплатный"}</span>`}const c=t==="paid"?"badge-paid":"badge-free";return`<span class="badge ${c}" onclick="tType(${id},'${t}')">${t==="paid"?"Платный":"Бесплатный"}</span>`};
+    return users.map(u=>{
+        const nm=(u.name||"").replace(/"/g,"&quot;");
+        const tr=(u.totalRx||u.totalTx)?`<span style="color:var(--green)">↓${fmtB(u.totalRx)}</span> <span style="color:var(--blue)">↑${fmtB(u.totalTx)}</span>`:`<span style="color:var(--fg-dim)">-</span>`;
+        if(!u.hasAccess)return`<tr><td><div class="user-cell"><div class="avatar">${ini(u.username,u.id)}</div><div class="user-info"><div class="user-name">${u.username||"-"}</div><div class="user-id">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td></td><td>0</td><td style="font-size:12px">${tr}</td><td style="font-size:12px;color:var(--fg-dim)">-</td><td style="font-size:12px;color:var(--fg-dim)">-</td><td></td><td><span class="badge badge-noaccess">Без доступа</span></td><td></td></tr>`;
+        const dc=u.paidUntil?fmtD(u.paidUntil):"";
+        const rg=u.accessGrantedAt?fmtD(u.accessGrantedAt):"-";
+        return`<tr><td><div class="user-cell"><div class="avatar">${ini(u.username,u.id)}</div><div class="user-info"><div class="user-name">${u.username||"-"}</div><div class="user-id">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td>${tg(u.type,u.id,u.hasAccess)}</td><td>${u.configCount}</td><td style="font-size:12px">${tr}</td><td style="font-size:12px">${fmtActive(u.lastActiveAt)}</td><td style="font-size:12px;color:var(--fg-dim)">${rg}</td><td><button class="date-btn${dc?"":" empty"}" onclick="openDP(event,${u.id})" data-date="${u.paidUntil||""}">${dc||"--"}</button></td><td>${ss(u.status)}</td><td><button class="icon-btn" onclick="sendNM(${u.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button></td></tr>`;
+    }).join("");
 }
 
 function render(){
     let f=US.filter(u=>{
-        if(FL==="paid")return u.type==="paid";
-        if(FL==="free")return u.type==="free";
+        if(FL==="paid")return u.type==="paid"&&u.hasAccess;
+        if(FL==="free")return u.type==="free"&&u.hasAccess;
+        if(FL==="noaccess")return !u.hasAccess;
         return true;
     });
     const total=f.length;
@@ -329,34 +510,17 @@ function render(){
 
     const tb=document.getElementById("tb");
     if(!page.length){tb.innerHTML=`<tr class="empty-row"><td colspan="10">Пользователи не найдены</td></tr>`;document.getElementById("pager").innerHTML="";return}
-
-    const ss=s=>{const m={paid:["Активен","tag-a"],expiring:["Истекает","tag-e"],expired:["Просрочен","tag-x"],unpaid:["Без оплаты","tag-x"]};const[l,c]=m[s]||["-","tag-f"];return`<span class="tag ${c}">${l}</span>`};
-    const tg=(t,id)=>{const c=t==="paid"?"tag-p":"tag-f";return`<span class="tag ${c}" onclick="tType(${id},'${t}')">${t==="paid"?"Платный":"Бесплатный"}</span>`};
-
-    tb.innerHTML=page.map(u=>{
-        const nm=(u.name||"").replace(/"/g,"&quot;");
-        const tr=(u.totalRx||u.totalTx)?`<span style="color:#3fb950">↓${fmtB(u.totalRx)}</span> <span style="color:#58a6ff">↑${fmtB(u.totalTx)}</span>`:`<span style="color:#484f58">-</span>`;
-        if(!u.hasAccess)return`<tr><td><div class="u"><div class="av">${ini(u.username,u.id)}</div><div class="u-info"><div class="un">${u.username||"-"}</div><div class="uid">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td>${tg(u.type,u.id)}</td><td>0</td><td style="font-size:11px">${tr}</td><td style="font-size:11px;color:#484f58">-</td><td style="font-size:11px;color:#484f58">-</td><td></td><td><span class="tag tag-n">Без доступа</span></td><td></td></tr>`;
-
-        const dc=u.paidUntil?fmtD(u.paidUntil):"";
-        const rg=u.accessGrantedAt?fmtD(u.accessGrantedAt):"-";
-        return`<tr><td><div class="u"><div class="av">${ini(u.username,u.id)}</div><div class="u-info"><div class="un">${u.username||"-"}</div><div class="uid">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td>${tg(u.type,u.id)}</td><td>${u.configCount}</td><td style="font-size:11px">${tr}</td><td style="font-size:11px">${fmtActive(u.lastActiveAt)}</td><td style="font-size:11px;color:#484f58">${rg}</td><td><button class="date-btn${dc?"":" em"}" onclick="openDP(event,${u.id})" data-date="${u.paidUntil||""}">${dc||"--"}</button></td><td>${ss(u.status)}</td><td><button class="ib" onclick="sendNM(${u.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button></td></tr>`
-    }).join("")
-
-    renderPager(pages,total)
-    fitTable()
+    tb.innerHTML=buildRows(page);
+    renderPager(pages,total);
 }
 
-function fitTable(){
-    const wrap=document.querySelector(".list-wrap");
-    const thead=document.querySelector("thead");
+function fadeRender(){
     const tb=document.getElementById("tb");
-    if(!wrap||!thead||!tb)return;
-    const rows=tb.querySelectorAll("tr");
-    if(!rows.length){wrap.style.height="";return}
-    const rowH=rows[0].getBoundingClientRect().height;
-    const headH=thead.getBoundingClientRect().height;
-    wrap.style.height=(headH+rowH*10)+"px"
+    tb.classList.add("fade-out");
+    setTimeout(()=>{
+        render();
+        tb.classList.remove("fade-out");
+    },120);
 }
 
 function renderPager(pages,total){
@@ -364,14 +528,17 @@ function renderPager(pages,total){
     if(pages<=1){el.innerHTML="";return}
     let h=`<button ${PAGE===1?"disabled":""} onclick="goPage(${PAGE-1})">←</button>`;
     for(let i=1;i<=pages;i++){
+        if(pages>7&&i>2&&i<pages-1&&Math.abs(i-PAGE)>1){
+            if(i===3||i===pages-2)h+=`<span style="color:var(--fg-dim);font-size:12px;padding:0 2px">…</span>`;
+            continue;
+        }
         h+=`<button class="${i===PAGE?"active":""}" onclick="goPage(${i})">${i}</button>`;
     }
     h+=`<button ${PAGE===pages?"disabled":""} onclick="goPage(${PAGE+1})">→</button>`;
     h+=`<span class="pg-info">${(PAGE-1)*PER_PAGE+1}–${Math.min(PAGE*PER_PAGE,total)} из ${total}</span>`;
     el.innerHTML=h;
 }
-
-function goPage(n){PAGE=n;render();window.scrollTo({top:document.querySelector(".list").offsetTop-80,behavior:"smooth"})}
+function goPage(n){PAGE=n;fadeRender()}
 
 async function sendNM(id){
     const msg=TPLS.payment;
@@ -379,25 +546,20 @@ async function sendNM(id){
     await api("/api/notify/"+id,{method:"POST",body:JSON.stringify({message:msg})});
     toast("Отправлено",0)
 }
-
 function openDP(e,id){
-    e.stopPropagation();
-    DP_ID=id;
-    const btn=e.currentTarget;
-    const ds=btn.dataset.date;
+    e.stopPropagation();DP_ID=id;
+    const btn=e.currentTarget;const ds=btn.dataset.date;
     const d=ds?new Date(ds):new Date();
     if(!ds)d.setMonth(d.getMonth()+1);
     const dd=d.getDate(),mm=d.getMonth(),yy=d.getFullYear();
-
     const sD=document.getElementById("dpD"),sM=document.getElementById("dpM"),sY=document.getElementById("dpY");
     sD.innerHTML="";sM.innerHTML="";sY.innerHTML="";
     for(let i=1;i<=31;i++)sD.innerHTML+=`<option value="${i}"${i===dd?" selected":""}>${i}</option>`;
     for(let i=0;i<12;i++)sM.innerHTML+=`<option value="${i}"${i===mm?" selected":""}>${MO_FULL[i]}</option>`;
     for(let i=2024;i<=2030;i++)sY.innerHTML+=`<option value="${i}"${i===yy?" selected":""}>${i}</option>`;
-
     const pop=document.getElementById("dp");
     const r=btn.getBoundingClientRect();
-    pop.style.left=Math.min(r.left,window.innerWidth-260)+"px";
+    pop.style.left=Math.min(r.left,window.innerWidth-280)+"px";
     pop.style.top=(r.bottom+6)+"px";
     pop.classList.add("on");
     setTimeout(()=>document.addEventListener("click",dpOutside),10);
@@ -405,9 +567,7 @@ function openDP(e,id){
 function dpOutside(e){if(!document.getElementById("dp").contains(e.target))closeDP()}
 function closeDP(){document.getElementById("dp").classList.remove("on");document.removeEventListener("click",dpOutside)}
 async function saveDP(){
-    const d=+document.getElementById("dpD").value;
-    const m=+document.getElementById("dpM").value;
-    const y=+document.getElementById("dpY").value;
+    const d=+document.getElementById("dpD").value,m=+document.getElementById("dpM").value,y=+document.getElementById("dpY").value;
     const iso=new Date(y,m,d).toISOString();
     await api("/api/payments/"+DP_ID,{method:"PATCH",body:JSON.stringify({paidUntil:iso})});
     closeDP();toast("Дата обновлена",0);lU()
@@ -416,26 +576,21 @@ async function clearDate(){
     await api("/api/payments/"+DP_ID,{method:"PATCH",body:JSON.stringify({paidUntil:""})});
     closeDP();toast("Дата убрана",0);lU()
 }
-
 let _nt=null;
 function saveName(id,val){
-    const u=US.find(u=>u.id===id);
-    if(u)u.name=val;
+    const u=US.find(u=>u.id===id);if(u)u.name=val;
     clearTimeout(_nt);
     _nt=setTimeout(()=>api("/api/payments/"+id,{method:"PATCH",body:JSON.stringify({name:val})}),500);
 }
-
 async function tType(id,cur){
     const n=cur==="paid"?"free":"paid";
     await api("/api/users/"+id+"/type",{method:"POST",body:JSON.stringify({type:n})});
-    const u=US.find(u=>u.id===id);
-    if(u)u.type=n;
-    document.getElementById("sP").textContent=US.filter(u=>u.type==="paid").length;
-    document.getElementById("sF").textContent=US.filter(u=>u.type==="free").length;
-    render();
+    const u=US.find(u=>u.id===id);if(u)u.type=n;
+    document.getElementById("sP").textContent=US.filter(u=>u.type==="paid"&&u.hasAccess).length;
+    document.getElementById("sF").textContent=US.filter(u=>u.type==="free"&&u.hasAccess).length;
+    fadeRender();
     toast(n==="paid"?"Платный":"Бесплатный",0);
 }
-
 async function notifyAll(){
     const msg=TPLS.payment;
     if(!msg){toast("Шаблон уведомления пуст",1);return}
@@ -450,64 +605,33 @@ async function sendBroadcast(){
     const r=await api("/api/broadcast",{method:"POST",body:JSON.stringify({message:m})});
     toast("Рассылка: "+r.sent+" из "+r.total,0)
 }
-
 function showTpl(){
-    document.getElementById("app").classList.add("hidden");
-    document.getElementById("tp").classList.remove("hidden");
-    document.getElementById("tInst").value=TPLS.instruction||"";
-    document.getElementById("tPay").value=TPLS.payment||"";
-    document.getElementById("tExpRem").value=TPLS.expiryReminder||"";
-    document.getElementById("tBc").value=TPLS.broadcast||"";
+    document.getElementById("app").classList.add("hidden");document.getElementById("tp").classList.remove("hidden");
+    document.getElementById("tInst").value=TPLS.instruction||"";document.getElementById("tPay").value=TPLS.payment||"";
+    document.getElementById("tExpRem").value=TPLS.expiryReminder||"";document.getElementById("tBc").value=TPLS.broadcast||"";
 }
-function showMain(){
-    document.getElementById("tp").classList.add("hidden");
-    document.getElementById("app").classList.remove("hidden");
-}
-async function loadTpl(){
-    TPLS=await api("/api/templates");
-}
-async function loadSettings(){
-    SETTINGS=await api("/api/settings");
-    updateToggleUI();
-}
+function showMain(){document.getElementById("tp").classList.add("hidden");document.getElementById("app").classList.remove("hidden")}
+async function loadTpl(){TPLS=await api("/api/templates")}
+async function loadSettings(){SETTINGS=await api("/api/settings");if(SETTINGS.settings)SETTINGS=SETTINGS.settings;updateToggleUI()}
 function updateToggleUI(){
-    const wrap=document.getElementById("autoToggle");
-    const label=document.getElementById("autoLabel");
-    if(SETTINGS.autoNotificationsEnabled){
-        wrap.classList.add("on");
-        label.textContent="Автоотправка: ВКЛ";
-    }else{
-        wrap.classList.remove("on");
-        label.textContent="Автоотправка: ВЫКЛ";
-    }
+    const w=document.getElementById("autoToggle"),l=document.getElementById("autoLabel");
+    if(SETTINGS.autoNotificationsEnabled){w.classList.add("on");l.textContent="Автоотправка: ВКЛ"}
+    else{w.classList.remove("on");l.textContent="Автоотправка: ВЫКЛ"}
 }
 async function toggleAuto(){
     SETTINGS=await api("/api/settings",{method:"PATCH",body:JSON.stringify({autoNotificationsEnabled:!SETTINGS.autoNotificationsEnabled})});
-    if(SETTINGS.settings)SETTINGS=SETTINGS.settings;
-    updateToggleUI();
+    if(SETTINGS.settings)SETTINGS=SETTINGS.settings;updateToggleUI();
     toast(SETTINGS.autoNotificationsEnabled?"Авто-уведомления включены":"Авто-уведомления выключены",0);
 }
 async function saveTpl(){
-    const data={
-        instruction:document.getElementById("tInst").value,
-        payment:document.getElementById("tPay").value,
-        expiryReminder:document.getElementById("tExpRem").value,
-        broadcast:document.getElementById("tBc").value
-    };
-    await api("/api/templates",{method:"PATCH",body:JSON.stringify(data)});
-    TPLS=data;
-    toast("Сохранено",0);
+    const data={instruction:document.getElementById("tInst").value,payment:document.getElementById("tPay").value,expiryReminder:document.getElementById("tExpRem").value,broadcast:document.getElementById("tBc").value};
+    await api("/api/templates",{method:"PATCH",body:JSON.stringify(data)});TPLS=data;toast("Сохранено",0);
 }
-
 function toast(msg,err){
-    const t=document.createElement("div");
-    t.className="toast "+(err?"err":"ok");t.textContent=msg;
+    const t=document.createElement("div");t.className="toast "+(err?"err":"ok");t.textContent=msg;
     document.body.appendChild(t);setTimeout(()=>t.remove(),2500)
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
-    const c=document.cookie.match(/s=([^;]+)/);if(c){T=c[1];login()}
-});
+document.addEventListener("DOMContentLoaded",()=>{const c=document.cookie.match(/s=([^;]+)/);if(c){T=c[1];login()}});
 </script>
 </body>
 </html>
