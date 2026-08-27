@@ -29,15 +29,18 @@ function loadMainDb() {
         if (existsSync(MAIN_DB_PATH)) {
             const raw = readFileSync(MAIN_DB_PATH, "utf-8");
             mainDb = JSON.parse(raw);
-            previousUserIds = new Set(Object.keys(mainDb.users).map(Number));
-            for (const [idStr, user] of Object.entries(mainDb.users)) {
-                const id = Number(idStr);
-                const totalRx = (user.configs || []).reduce((s, c) => s + (c.totalRx || 0), 0);
-                previousTraffic.set(id, totalRx);
-            }
         }
     } catch (e) {
         console.error("[DB] Failed to load main database:", e);
+    }
+}
+
+export function syncPreviousState() {
+    previousUserIds = new Set(Object.keys(mainDb.users).map(Number));
+    for (const [idStr, user] of Object.entries(mainDb.users)) {
+        const id = Number(idStr);
+        const totalRx = (user.configs || []).reduce((s, c) => s + (c.totalRx || 0), 0);
+        previousTraffic.set(id, totalRx);
     }
 }
 
@@ -154,6 +157,7 @@ export function patchTemplates(patch: Partial<MessageTemplates>) {
 export function initDb() {
     ensureDataDir();
     loadMainDb();
+    syncPreviousState();
     loadPayments();
     loadNotificationLog();
     loadTemplates();
