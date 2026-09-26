@@ -1,42 +1,48 @@
 <!DOCTYPE html>
-<html lang="ru" class="antialiased">
+<html lang="ru" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WireGuard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #f4f4f5;
-            --card: #ffffff;
-            --border: #e4e4e7;
-            --border-hover: #d4d4d8;
-            --fg: #18181b;
-            --fg-muted: #71717a;
-            --fg-dim: #a1a1aa;
-            --primary: #18181b;
-            --primary-fg: #fafafa;
-            --green: #16a34a;
-            --green-bg: #f0fdf4;
-            --green-border: #bbf7d0;
-            --blue: #2563eb;
-            --blue-bg: #eff6ff;
-            --blue-border: #bfdbfe;
-            --amber: #d97706;
-            --amber-bg: #fffbeb;
-            --amber-border: #fde68a;
-            --red: #dc2626;
-            --red-bg: #fef2f2;
-            --red-border: #fecaca;
-            --violet: #7c3aed;
-            --violet-bg: #f5f3ff;
-            --violet-border: #ddd6fe;
-            --radius: 8px;
-            --radius-sm: 6px;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --bg: #111318;
+            --bg-1: #0d0f14;
+            --surface-0: #161A20;
+            --surface-1: #1C2128;
+            --surface-2: #222830;
+            --border: rgba(255,255,255,0.10);
+            --border-hover: rgba(255,255,255,0.18);
+            --fg: #e8eaed;
+            --fg-muted: #9ca3af;
+            --fg-dim: #5f6570;
+            --primary: #74C9A0;
+            --primary-bg: rgba(116,201,160,0.12);
+            --green: #74C9A0;
+            --green-bg: rgba(116,201,160,0.15);
+            --green-border: rgba(116,201,160,0.3);
+            --blue: #5B9BD5;
+            --blue-bg: rgba(91,155,213,0.15);
+            --blue-border: rgba(91,155,213,0.3);
+            --amber: #E3AA5B;
+            --amber-bg: rgba(227,170,91,0.15);
+            --amber-border: rgba(227,170,91,0.3);
+            --red: #E27C87;
+            --red-bg: rgba(226,124,135,0.15);
+            --red-border: rgba(226,124,135,0.3);
+            --violet: #A78BFA;
+            --violet-bg: rgba(167,139,250,0.15);
+            --violet-border: rgba(167,139,250,0.3);
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-pill: 999px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
         }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -44,57 +50,84 @@
             color: var(--fg);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
         .hidden { display: none !important; }
 
         /* Login */
         .login-page { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .login-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 40px 32px; width: 100%; max-width: 320px; text-align: center; box-shadow: var(--shadow); }
-        .login-card h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.01em; }
-        .login-card p { font-size: 13px; color: var(--fg-muted); margin-bottom: 24px; }
-        .login-card input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--fg); font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px; transition: border-color 0.15s, box-shadow 0.15s; }
-        .login-card input:focus { border-color: #71717a; box-shadow: 0 0 0 3px rgba(113,113,122,0.1); }
+        .login-card { background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px 36px; width: 100%; max-width: 340px; text-align: center; box-shadow: var(--shadow); }
+        .login-card h1 { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; color: var(--fg); }
+        .login-card .login-icon { font-size: 48px; color: var(--primary); margin-bottom: 12px; }
+        .login-card p { font-size: 13px; color: var(--fg-muted); margin-bottom: 28px; }
+        .login-card input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-1); color: var(--fg); font-size: 14px; font-family: inherit; outline: none; margin-bottom: 14px; transition: border-color 0.15s, box-shadow 0.15s; }
+        .login-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--green-bg); }
         .login-card input::placeholder { color: var(--fg-dim); }
-        .login-card button { width: 100%; padding: 9px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: var(--primary-fg); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+        .login-card button { width: 100%; padding: 10px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: var(--bg); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.15s, transform 0.15s; }
         .login-card button:hover { opacity: 0.9; }
         .login-card button:active { transform: scale(0.98); }
 
-        /* Layout */
-        .main { max-width: 1400px; margin: 0 auto; padding: 24px 20px 40px; }
-        .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-        .top h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
-        .top-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        /* Topbar */
+        .topbar {
+            height: 56px; background: var(--bg-1); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; gap: 12px;
+        }
+        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 600; color: var(--fg); white-space: nowrap; }
+        .topbar-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
         /* Buttons */
-        .btn { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; line-height: 20px; border: 1px solid transparent; }
+        .btn {
+            padding: 7px 14px; border-radius: var(--radius-sm); font-size: 13px;
+            font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s;
+            line-height: 20px; border: 1px solid transparent; display: inline-flex;
+            align-items: center; gap: 6px; white-space: nowrap;
+        }
         .btn:active { transform: scale(0.97); }
-        .btn-primary { background: var(--primary); color: var(--primary-fg); }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-outline { background: var(--card); color: var(--fg-muted); border-color: var(--border); }
-        .btn-outline:hover { background: var(--bg); color: var(--fg); }
+        .btn .ti { font-size: 16px; }
+        .btn-primary { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-outline {
+            background: var(--surface-0); color: var(--fg-muted); border-color: var(--border);
+        }
+        .btn-outline:hover { background: var(--surface-1); color: var(--fg); }
         .btn-ghost { background: transparent; color: var(--fg-muted); }
-        .btn-ghost:hover { background: var(--bg); color: var(--fg); }
+        .btn-ghost:hover { background: var(--surface-1); color: var(--fg); }
+        .btn-danger { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+        .btn-danger:hover { opacity: 0.85; }
+
+        /* Content */
+        .content-wrapper { min-height: 100vh; display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .content-body { flex: 1; padding: 20px; }
+        .main { }
+
+        /* Layout header for tpl-page */
+        .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
 
         /* Stat cards */
         .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
         .stat-card {
-            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 14px 16px; cursor: pointer; user-select: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+            background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg);
+            padding: 14px 14px; cursor: pointer; user-select: none;
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+            display: flex; flex-direction: column; gap: 8px;
         }
-        .stat-card:hover { border-color: var(--border-hover); }
+        .stat-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-sm); }
         .stat-card.active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
-        .stat-card .label { font-size: 12px; color: var(--fg-muted); font-weight: 500; margin-bottom: 4px; }
-        .stat-card .value { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+        .stat-card .stat-row { display: flex; align-items: center; gap: 6px; }
+        .stat-card .stat-icon { font-size: 20px; color: var(--fg-dim); flex-shrink: 0; }
+        .stat-card .stat-label { font-size: 13px; color: var(--fg-muted); font-weight: 500; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; font-family: 'Unbounded', sans-serif; }
 
         /* Table */
-        .table-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .table-card { background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
         .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; }
         thead th {
-            padding: 10px 12px; font-size: 11px; color: var(--fg-muted); font-weight: 500;
-            text-align: left; background: var(--bg); border-bottom: 1px solid var(--border);
-            text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; position: sticky; top: 0; z-index: 1;
+            padding: 11px 12px; font-size: 11px; color: var(--fg-dim); font-weight: 500;
+            text-align: left; background: var(--surface-1); border-bottom: 1px solid var(--border);
+            text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
+            position: sticky; top: 0; z-index: 1;
         }
         tbody td {
             padding: 10px 12px; border-bottom: 1px solid var(--border);
@@ -102,10 +135,10 @@
             transition: background 0.1s ease;
         }
         tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: #fafafa; }
+        tbody tr:hover td { background: var(--surface-1); }
         .empty-row td { text-align: center; color: var(--fg-muted); padding: 40px 12px; height: auto; }
 
-        /* Fade transition for table body */
+        /* Fade */
         .fade-target { transition: opacity 0.12s ease; }
         .fade-target.fade-out { opacity: 0.3; }
 
@@ -115,16 +148,16 @@
             width: 32px; height: 32px; border-radius: var(--radius-sm);
             display: flex; align-items: center; justify-content: center;
             font-size: 11px; font-weight: 600; flex-shrink: 0;
-            background: var(--bg); color: var(--fg-muted);
+            background: var(--surface-2); color: var(--fg-muted);
         }
         .user-info { overflow: hidden; min-width: 0; }
         .user-name { font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-id { font-size: 11px; color: var(--fg-dim); font-family: 'SF Mono', Menlo, monospace; }
+        .user-id { font-size: 11px; color: var(--fg-dim); font-family: 'JetBrains Mono', monospace; }
 
         /* Badges */
         .badge {
-            display: inline-flex; align-items: center; padding: 2px 8px;
-            border-radius: 9999px; font-size: 11px; font-weight: 500;
+            display: inline-flex; align-items: center; padding: 3px 10px;
+            border-radius: var(--radius-pill); font-size: 11px; font-weight: 500;
             white-space: nowrap; line-height: 1.5; border: 1px solid transparent;
             transition: background 0.15s, color 0.15s, border-color 0.15s;
         }
@@ -133,27 +166,27 @@
         .badge-expired { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
         .badge-noaccess { background: var(--violet-bg); color: var(--violet); border-color: var(--violet-border); }
         .badge-paid { background: var(--green-bg); color: var(--green); border-color: var(--green-border); cursor: pointer; }
-        .badge-paid:hover { background: #dcfce7; }
+        .badge-paid:hover { background: rgba(116,201,160,0.25); }
         .badge-free { background: var(--blue-bg); color: var(--blue); border-color: var(--blue-border); cursor: pointer; }
-        .badge-free:hover { background: #dbeafe; }
+        .badge-free:hover { background: rgba(91,155,213,0.25); }
 
         /* Inputs */
         .name-input {
             border: 1px solid transparent; background: transparent; font-size: 13px;
             font-family: inherit; color: var(--fg-muted); padding: 4px 6px;
-            border-radius: 4px; width: 100%; outline: none; transition: all 0.15s;
+            border-radius: 6px; width: 100%; outline: none; transition: all 0.15s;
         }
-        .name-input:hover { background: var(--bg); }
-        .name-input:focus { background: var(--card); color: var(--fg); border-color: var(--border); box-shadow: 0 0 0 2px rgba(113,113,122,0.08); }
+        .name-input:hover { background: var(--surface-2); }
+        .name-input:focus { background: var(--surface-1); color: var(--fg); border-color: var(--border); box-shadow: 0 0 0 2px var(--green-bg); }
         .name-input::placeholder { color: var(--fg-dim); }
 
         .date-btn {
-            cursor: pointer; padding: 3px 8px; border-radius: 4px; font-size: 12px;
-            transition: background 0.15s; border: 1px solid transparent;
-            background: transparent; font-family: inherit; color: var(--fg-muted); white-space: nowrap;
+            cursor: pointer; padding: 4px 10px; border-radius: 6px; font-size: 12px;
+            transition: all 0.15s; border: 1px solid var(--border);
+            background: var(--surface-1); font-family: inherit; color: var(--fg-muted); white-space: nowrap;
         }
-        .date-btn:hover { background: var(--bg); }
-        .date-btn.empty { color: var(--border); }
+        .date-btn:hover { background: var(--surface-2); border-color: var(--border-hover); }
+        .date-btn.empty { color: var(--fg-dim); border-color: transparent; }
 
         .icon-btn {
             width: 30px; height: 30px; border: 1px solid transparent; border-radius: var(--radius-sm);
@@ -161,112 +194,127 @@
             background: transparent; color: var(--fg-dim); cursor: pointer; flex-shrink: 0;
             transition: all 0.15s;
         }
-        .icon-btn:hover { background: var(--bg); color: var(--fg); }
-        .icon-btn svg { width: 15px; height: 15px; }
+        .icon-btn:hover { background: var(--surface-2); color: var(--fg); }
+        .icon-btn .ti { font-size: 16px; }
 
         /* Pagination */
         .pager {
             display: flex; align-items: center; justify-content: center;
             gap: 4px; padding: 10px 12px;
-            border-top: 1px solid var(--border); background: var(--card);
+            border-top: 1px solid var(--border); background: var(--surface-0);
         }
         .pager button {
             min-width: 30px; height: 30px; border-radius: var(--radius-sm);
-            border: 1px solid var(--border); background: var(--card);
+            border: 1px solid var(--border); background: var(--surface-0);
             color: var(--fg-muted); font-size: 13px; font-weight: 500;
             cursor: pointer; font-family: inherit; transition: all 0.15s;
             display: flex; align-items: center; justify-content: center; padding: 0 6px;
         }
-        .pager button:hover:not(.active):not(:disabled) { border-color: var(--border-hover); color: var(--fg); }
-        .pager button.active { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+        .pager button:hover:not(.active):not(:disabled) { border-color: var(--border-hover); color: var(--fg); background: var(--surface-1); }
+        .pager button.active { background: var(--primary); color: var(--bg); border-color: var(--primary); }
         .pager button:disabled { opacity: 0.3; cursor: default; }
         .pager .pg-info { font-size: 12px; color: var(--fg-dim); margin: 0 4px; white-space: nowrap; }
 
         /* Date picker */
-        .dp-pop { position: fixed; z-index: 200; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; width: 270px; display: none; box-shadow: var(--shadow); }
+        .dp-pop { position: fixed; z-index: 200; background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; width: 280px; display: none; box-shadow: var(--shadow); }
         .dp-pop.on { display: block; }
-        .dp-row { display: flex; gap: 6px; margin-bottom: 10px; }
-        .dp-row select { flex: 1; padding: 7px 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); font-size: 13px; font-family: inherit; color: var(--fg); outline: none; appearance: none; text-align: center; cursor: pointer; transition: border-color 0.15s; }
-        .dp-row select:focus { border-color: #71717a; }
+        .dp-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .dp-row select {
+            flex: 1; padding: 8px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--surface-1); font-size: 13px; font-family: inherit; color: var(--fg);
+            outline: none; appearance: none; text-align: center; cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .dp-row select:focus { border-color: var(--primary); }
+        .dp-row select option { background: var(--surface-1); color: var(--fg); }
         .dp-acts { display: flex; gap: 6px; justify-content: flex-end; }
-        .dp-acts button { padding: 6px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid transparent; transition: all 0.15s; }
-        .dp-cancel { background: var(--bg); color: var(--fg-muted); border-color: var(--border) !important; }
-        .dp-cancel:hover { background: var(--border); }
-        .dp-ok { background: var(--primary); color: var(--primary-fg) !important; }
-        .dp-ok:hover { opacity: 0.9; }
+        .dp-acts button { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid transparent; transition: all 0.15s; }
+        .dp-cancel { background: var(--surface-1); color: var(--fg-muted); border-color: var(--border) !important; }
+        .dp-cancel:hover { background: var(--surface-2); }
+        .dp-ok { background: var(--primary); color: var(--bg) !important; }
+        .dp-ok:hover { opacity: 0.85; }
         .dp-clear { background: transparent !important; color: var(--red) !important; margin-right: auto; }
         .dp-clear:hover { background: var(--red-bg); }
 
         /* Template page */
-        .tpl-page { max-width: 600px; margin: 0 auto; padding: 28px 20px 60px; }
-        .tpl-page h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
-        .tpl-sub { font-size: 13px; color: var(--fg-muted); margin-bottom: 28px; }
-        .tpl-grid { display: flex; flex-direction: column; gap: 16px; }
-        .tpl-card { }
-        .tpl-card-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+        .tpl-page { max-width: 640px; margin: 0 auto; padding: 24px 20px 60px; }
+        .tpl-header { margin-bottom: 24px; text-align: center; }
+        .tpl-header h2 { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 4px; color: var(--fg); }
+        .tpl-sub { font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; }
+        .tpl-nav { display: flex; gap: 8px; justify-content: center; }
+        .tpl-grid { display: flex; flex-direction: column; gap: 20px; }
+        .tpl-card { background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+        .tpl-card-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 10px; color: var(--fg); }
         .tpl-card textarea {
-            width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-            background: var(--card); color: var(--fg); font-size: 13px;
-            font-family: 'SF Mono', Menlo, monospace; outline: none;
+            width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--surface-1); color: var(--fg); font-size: 13px;
+            font-family: 'JetBrains Mono', monospace; outline: none;
             min-height: 120px; resize: vertical; line-height: 1.6;
             transition: border-color 0.15s, box-shadow 0.15s;
         }
-        .tpl-card textarea:focus { border-color: #71717a; box-shadow: 0 0 0 2px rgba(113,113,122,0.08); }
+        .tpl-card textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--green-bg); }
         .tpl-card textarea::placeholder { color: var(--fg-dim); font-family: 'Inter', sans-serif; }
-        .tpl-card + .tpl-card { padding-top: 16px; border-top: 1px solid var(--border); }
 
         /* Toggle */
         .toggle-wrap {
-            display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+            display: flex; align-items: center; gap: 8px; padding: 7px 12px;
             border-radius: var(--radius-sm); border: 1px solid var(--border);
-            background: var(--card); cursor: pointer; transition: all 0.15s; user-select: none;
+            background: var(--surface-0); cursor: pointer; transition: all 0.15s; user-select: none;
         }
         .toggle-wrap:hover { border-color: var(--border-hover); }
         .toggle-label { font-size: 12px; font-weight: 500; color: var(--fg-muted); }
-        .toggle-wrap.on { border-color: var(--green); background: var(--green-bg); }
+        .toggle-wrap.on { border-color: var(--green-border); background: var(--green-bg); }
         .toggle-wrap.on .toggle-label { color: var(--green); }
 
         /* Toast */
         .toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px;
+            padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px;
             font-weight: 500; z-index: 300; pointer-events: none;
             box-shadow: var(--shadow); border: 1px solid var(--border);
+            animation: toastIn 0.2s ease;
         }
-        .toast.ok { background: var(--card); color: var(--fg); }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } }
+        .toast.ok { background: var(--surface-0); color: var(--fg); }
         .toast.err { background: var(--red); color: #fff; border-color: var(--red); }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
-        /* Mobile */
+        /* Desktop: transparent topbar */
+        @media (min-width: 641px) {
+            .topbar { background: transparent; border-bottom: none; height: auto; min-height: 48px; padding-top: 0; }
+        }
+
+        /* ====== Mobile ====== */
         @media (max-width: 640px) {
-            .main { padding: 14px 10px 40px; }
-            .top { gap: 6px; margin-bottom: 12px; }
-            .top h1 { font-size: 18px; }
-            .top-actions { gap: 4px; }
+            .content-wrapper { max-width: 100%; }
+            .content-body { padding: 14px 10px 40px; }
+            .topbar { padding: 0 10px; flex-wrap: wrap; height: auto; min-height: 48px; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+            .topbar-title { font-size: 14px; }
+            .topbar-actions { width: 100%; flex-wrap: wrap; justify-content: flex-end; }
             .btn { padding: 5px 10px; font-size: 11px; }
-
-            .cards { grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 12px; }
+            .cards { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
             .stat-card { padding: 10px 12px; }
-            .stat-card .label { font-size: 11px; }
-            .stat-card .value { font-size: 20px; }
+            .stat-card .stat-label { font-size: 10px; }
+            .stat-card .stat-value { font-size: 22px; }
 
+            .table-card { border-radius: var(--radius-md); }
             .table-scroll { overflow-x: auto; }
             table { table-layout: fixed; width: 100%; min-width: 920px; border-collapse: collapse; }
-            colgroup col:nth-child(1) { width: 16% !important; }  /* Пользователь */
-            colgroup col:nth-child(2) { width: 12% !important; }  /* Имя */
-            colgroup col:nth-child(3) { width: 11% !important; }  /* Тип */
-            colgroup col:nth-child(4) { width: 5% !important; }   /* Устр. */
-            colgroup col:nth-child(5) { width: 17% !important; }  /* Трафик */
-            colgroup col:nth-child(6) { width: 14% !important; }  /* Активность */
-            colgroup col:nth-child(7) { width: 0 !important; display: none; }  /* Регистрация — скрыта */
-            colgroup col:nth-child(8) { width: 13% !important; }  /* Оплата до */
-            colgroup col:nth-child(9) { width: 9% !important; }  /* Статус */
-            colgroup col:nth-child(10) { width: 3% !important; }  /* колокольчик */
+            colgroup col:nth-child(1) { width: 16% !important; }
+            colgroup col:nth-child(2) { width: 12% !important; }
+            colgroup col:nth-child(3) { width: 11% !important; }
+            colgroup col:nth-child(4) { width: 5% !important; }
+            colgroup col:nth-child(5) { width: 17% !important; }
+            colgroup col:nth-child(6) { width: 14% !important; }
+            colgroup col:nth-child(7) { width: 0 !important; display: none; }
+            colgroup col:nth-child(8) { width: 13% !important; }
+            colgroup col:nth-child(9) { width: 9% !important; }
+            colgroup col:nth-child(10) { width: 3% !important; }
             thead th { padding: 10px 8px; font-size: 11px; white-space: nowrap; }
             tbody td { padding: 10px 8px; font-size: 11px; white-space: nowrap; }
             thead th:nth-child(7) { display: none; }
@@ -278,17 +326,18 @@
             .badge { font-size: 11px; padding: 2px 8px; }
             .date-btn { font-size: 11px; padding: 2px 6px; }
             .icon-btn { width: 26px; height: 26px; }
-            .icon-btn svg { width: 13px; height: 13px; }
+            .icon-btn .ti { font-size: 14px; }
             .name-input { font-size: 11px; padding: 2px 4px; }
 
             .pager { padding: 8px; gap: 3px; }
             .pager button { min-width: 26px; height: 26px; font-size: 11px; padding: 0 5px; }
             .pager .pg-info { font-size: 10px; margin: 0 2px; }
 
-            .dp-pop { width: 230px; padding: 10px; }
+            .dp-pop { width: 240px; padding: 12px; }
             .tpl-page { padding: 16px 12px 40px; }
             .tpl-page h2 { font-size: 18px; margin-bottom: 4px; }
             .tpl-sub { font-size: 12px; margin-bottom: 20px; }
+            .tpl-card { padding: 12px; }
             .tpl-card-name { font-size: 12px; margin-bottom: 6px; }
             .tpl-card textarea { min-height: 90px; font-size: 12px; padding: 8px 10px; }
         }
@@ -298,6 +347,7 @@
 
 <div class="login-page" id="lp">
     <div class="login-card">
+        <div class="login-icon"><i class="ti ti-shield-check"></i></div>
         <h1>WireGuard</h1>
         <p>Панель управления</p>
         <input type="password" id="lpw" placeholder="Пароль" onkeydown="if(event.key==='Enter')login()">
@@ -305,82 +355,85 @@
     </div>
 </div>
 
-<div class="main hidden" id="app">
-    <div class="top">
-        <h1>Пользователи</h1>
-        <div class="top-actions">
+<div class="content-wrapper">
+    <div class="topbar" id="topbar">
+        <div class="topbar-title" id="topTitle">Пользователи</div>
+        <div class="topbar-actions" id="topActions">
             <div class="toggle-wrap" id="autoToggle" onclick="toggleAuto()">
                 <span class="toggle-label" id="autoLabel">Автоотправка: ВЫКЛ</span>
             </div>
-            <button class="btn btn-ghost" onclick="logout()">Выйти</button>
-            <button class="btn btn-outline" onclick="showTpl()">Шаблоны</button>
-            <button class="btn btn-outline" onclick="sendBroadcast()">Рассылка</button>
-            <button class="btn btn-outline" onclick="notifyAll()">Уведомить просроченных</button>
+            <button class="btn btn-outline" onclick="showTpl()"><i class="ti ti-file-text"></i> Шаблоны</button>
+            <button class="btn btn-outline" onclick="sendBroadcast()"><i class="ti ti-mail"></i> Рассылка</button>
+            <button class="btn btn-outline" onclick="notifyAll()"><i class="ti ti-bell"></i> Уведомить просроченных</button>
+            <button class="btn btn-ghost" onclick="logout()"><i class="ti ti-logout"></i></button>
         </div>
     </div>
 
-    <div class="cards">
-        <div class="stat-card active" id="cAll" onclick="filt('all')">
-            <div class="label">Всего</div><div class="value" id="sT">-</div>
-        </div>
-        <div class="stat-card" id="cPaid" onclick="filt('paid')">
-            <div class="label">Платные</div><div class="value" id="sP">-</div>
-        </div>
-        <div class="stat-card" id="cFree" onclick="filt('free')">
-            <div class="label">Бесплатные</div><div class="value" id="sF">-</div>
-        </div>
-        <div class="stat-card" id="cNoAccess" onclick="filt('noaccess')">
-            <div class="label">Без доступа</div><div class="value" id="sNA">-</div>
-        </div>
-    </div>
+    <div class="content-body">
+        <div class="main" id="app">
+            <div class="cards">
+                <div class="stat-card active" id="cAll" onclick="filt('all')">
+                    <div class="stat-row"><i class="ti ti-users stat-icon"></i><span class="stat-label">Всего</span></div><div class="stat-value" id="sT">-</div>
+                </div>
+                <div class="stat-card" id="cPaid" onclick="filt('paid')">
+                    <div class="stat-row"><i class="ti ti-credit-card stat-icon"></i><span class="stat-label">Платные</span></div><div class="stat-value" id="sP">-</div>
+                </div>
+                <div class="stat-card" id="cFree" onclick="filt('free')">
+                    <div class="stat-row"><i class="ti ti-gift stat-icon"></i><span class="stat-label">Бесплатные</span></div><div class="stat-value" id="sF">-</div>
+                </div>
+                <div class="stat-card" id="cNoAccess" onclick="filt('noaccess')">
+                    <div class="stat-row"><i class="ti ti-lock stat-icon"></i><span class="stat-label">Без доступа</span></div><div class="stat-value" id="sNA">-</div>
+                </div>
+            </div>
 
-    <div class="table-card">
-        <div class="table-scroll">
-            <table>
-                <colgroup>
-                    <col style="width:16%"><col style="width:11%"><col style="width:9%"><col style="width:5%">
-                    <col style="width:12%"><col style="width:12%"><col style="width:9%"><col style="width:11%">
-                    <col style="width:9%"><col style="width:6%">
-                </colgroup>
-                <thead><tr>
-                    <th>Пользователь</th><th>Имя</th><th>Тип</th><th>Устр.</th>
-                    <th>Трафик</th><th>Активность</th><th>Регистрация</th><th>Оплата до</th><th>Статус</th><th></th>
-                </tr></thead>
-                <tbody id="tb" class="fade-target"></tbody>
-            </table>
+            <div class="table-card">
+                <div class="table-scroll">
+                    <table>
+                        <colgroup>
+                            <col style="width:16%"><col style="width:11%"><col style="width:9%"><col style="width:5%">
+                            <col style="width:12%"><col style="width:12%"><col style="width:9%"><col style="width:11%">
+                            <col style="width:9%"><col style="width:6%">
+                        </colgroup>
+                        <thead><tr>
+                            <th>Пользователь</th><th>Имя</th><th>Тип</th><th>Устр.</th>
+                            <th>Трафик</th><th>Активность</th><th>Регистрация</th><th>Оплата до</th><th>Статус</th><th></th>
+                        </tr></thead>
+                        <tbody id="tb" class="fade-target"></tbody>
+                    </table>
+                </div>
+                <div class="pager" id="pager"></div>
+            </div>
         </div>
-        <div class="pager" id="pager"></div>
-    </div>
-</div>
 
-<div class="tpl-page hidden" id="tp">
-    <div class="top">
-        <div>
-            <h2>Шаблоны</h2>
-            <div class="tpl-sub">Тексты сообщений</div>
-        </div>
-        <div class="top-actions">
-            <button class="btn btn-ghost" onclick="showMain()">Назад</button>
-            <button class="btn btn-primary" onclick="saveTpl()">Сохранить</button>
-        </div>
-    </div>
-
-    <div class="tpl-grid">
-        <div class="tpl-card">
-            <span class="tpl-card-name">Инструкция по подключению</span>
-            <textarea id="tInst" placeholder="Текст инструкции..."></textarea>
-        </div>
-        <div class="tpl-card">
-            <span class="tpl-card-name">Уведомление об оплате</span>
-            <textarea id="tPay" placeholder="Текст уведомления..."></textarea>
-        </div>
-        <div class="tpl-card">
-            <span class="tpl-card-name">Напоминание за 3 дня</span>
-            <textarea id="tExpRem" placeholder="Текст напоминания..."></textarea>
-        </div>
-        <div class="tpl-card">
-            <span class="tpl-card-name">Рассылка</span>
-            <textarea id="tBc" placeholder="Текст рассылки..."></textarea>
+        <div class="tpl-page hidden" id="tp">
+            <div class="tpl-header">
+                <div>
+                    <h2>Шаблоны</h2>
+                    <div class="tpl-sub">Тексты сообщений</div>
+                </div>
+                <div class="tpl-nav">
+                    <button class="btn btn-ghost" onclick="showMain()"><i class="ti ti-arrow-left"></i> Назад</button>
+                    <button class="btn btn-primary" onclick="saveTpl()"><i class="ti ti-check"></i> Сохранить</button>
+                </div>
+            </div>
+            <div class="tpl-grid">
+                <div class="tpl-card">
+                    <span class="tpl-card-name"><i class="ti ti-book"></i>&ensp;Инструкция по подключению</span>
+                    <textarea id="tInst" placeholder="Текст инструкции..."></textarea>
+                </div>
+                <div class="tpl-card">
+                    <span class="tpl-card-name"><i class="ti ti-credit-card"></i>&ensp;Уведомление об оплате</span>
+                    <textarea id="tPay" placeholder="Текст уведомления..."></textarea>
+                </div>
+                <div class="tpl-card">
+                    <span class="tpl-card-name"><i class="ti ti-clock"></i>&ensp;Напоминание за 3 дня</span>
+                    <textarea id="tExpRem" placeholder="Текст напоминания..."></textarea>
+                </div>
+                <div class="tpl-card">
+                    <span class="tpl-card-name"><i class="ti ti-mail"></i>&ensp;Рассылка</span>
+                    <textarea id="tBc" placeholder="Текст рассылки..."></textarea>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -453,13 +506,13 @@ function _mockFetch(url,opts){
 
 function login(){
     const p=document.getElementById("lpw").value;if(p)T=p;
-    document.cookie="s="+T+";path=/;max-age=86400";
+    document.cookie="secret="+T+";path=/;max-age=86400";
     fetch("/api/stats",{headers:{Authorization:"Bearer "+T}})
     .then(r=>{if(!r.ok)throw 0;return r.json()})
     .then(d=>{document.getElementById("lp").classList.add("hidden");document.getElementById("app").classList.remove("hidden");uS(d);lU();loadTpl();loadSettings()})
     .catch(()=>toast("Неверный пароль",1))
 }
-function logout(){T="";document.cookie="s=;path=/;max-age=0";document.getElementById("app").classList.add("hidden");document.getElementById("lp").classList.remove("hidden")}
+function logout(){T="";document.cookie="secret=;path=/;max-age=0";document.getElementById("app").classList.add("hidden");document.getElementById("lp").classList.remove("hidden")}
 function api(p,o={}){return fetch(p,{...o,headers:{Authorization:"Bearer "+T,"Content-Type":"application/json",...o.headers}}).then(r=>r.json())}
 function uS(d){document.getElementById("sT").textContent=d.total||0;document.getElementById("sP").textContent=d.paid||0;document.getElementById("sF").textContent=d.unpaid||0;document.getElementById("sNA").textContent=d.noAccess||0}
 async function lU(){US=await api("/api/users");render();document.getElementById("sT").textContent=US.length;document.getElementById("sP").textContent=US.filter(u=>u.type==="paid"&&u.hasAccess).length;document.getElementById("sF").textContent=US.filter(u=>u.type==="free"&&u.hasAccess).length;document.getElementById("sNA").textContent=US.filter(u=>!u.hasAccess).length}
@@ -491,7 +544,7 @@ function buildRows(users){
         if(!u.hasAccess)return`<tr><td><div class="user-cell"><div class="avatar">${ini(u.username,u.id)}</div><div class="user-info"><div class="user-name">${u.username||"-"}</div><div class="user-id">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td></td><td>0</td><td style="font-size:12px">${tr}</td><td style="font-size:12px;color:var(--fg-dim)">-</td><td style="font-size:12px;color:var(--fg-dim)">-</td><td></td><td><span class="badge badge-noaccess">Без доступа</span></td><td></td></tr>`;
         const dc=u.paidUntil?fmtD(u.paidUntil):"";
         const rg=u.accessGrantedAt?fmtD(u.accessGrantedAt):"-";
-        return`<tr><td><div class="user-cell"><div class="avatar">${ini(u.username,u.id)}</div><div class="user-info"><div class="user-name">${u.username||"-"}</div><div class="user-id">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td>${tg(u.type,u.id,u.hasAccess)}</td><td>${u.configCount}</td><td style="font-size:12px">${tr}</td><td style="font-size:12px">${fmtActive(u.lastActiveAt)}</td><td style="font-size:12px;color:var(--fg-dim)">${rg}</td><td><button class="date-btn${dc?"":" empty"}" onclick="openDP(event,${u.id})" data-date="${u.paidUntil||""}">${dc||"--"}</button></td><td>${ss(u.status)}</td><td><button class="icon-btn" onclick="sendNM(${u.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button></td></tr>`;
+        return`<tr><td><div class="user-cell"><div class="avatar">${ini(u.username,u.id)}</div><div class="user-info"><div class="user-name">${u.username||"-"}</div><div class="user-id">${u.id}</div></div></div></td><td><input class="name-input" value="${nm}" placeholder="Имя" oninput="saveName(${u.id},this.value)"></td><td>${tg(u.type,u.id,u.hasAccess)}</td><td>${u.configCount}</td><td style="font-size:12px">${tr}</td><td style="font-size:12px">${fmtActive(u.lastActiveAt)}</td><td style="font-size:12px;color:var(--fg-dim)">${rg}</td><td><button class="date-btn${dc?"":" empty"}" onclick="openDP(event,${u.id})" data-date="${u.paidUntil||""}">${dc||"--"}</button></td><td>${ss(u.status)}</td><td><button class="icon-btn" onclick="sendNM(${u.id})"><i class="ti ti-bell"></i></button></td></tr>`;
     }).join("");
 }
 
@@ -607,16 +660,21 @@ async function sendBroadcast(){
 }
 function showTpl(){
     document.getElementById("app").classList.add("hidden");document.getElementById("tp").classList.remove("hidden");
+    document.getElementById("topbar").style.display="none";
     document.getElementById("tInst").value=TPLS.instruction||"";document.getElementById("tPay").value=TPLS.payment||"";
     document.getElementById("tExpRem").value=TPLS.expiryReminder||"";document.getElementById("tBc").value=TPLS.broadcast||"";
 }
-function showMain(){document.getElementById("tp").classList.add("hidden");document.getElementById("app").classList.remove("hidden")}
+function showMain(){
+    document.getElementById("tp").classList.add("hidden");document.getElementById("app").classList.remove("hidden");
+    document.getElementById("topbar").style.display="";
+}
 async function loadTpl(){TPLS=await api("/api/templates")}
 async function loadSettings(){SETTINGS=await api("/api/settings");if(SETTINGS.settings)SETTINGS=SETTINGS.settings;updateToggleUI()}
 function updateToggleUI(){
     const w=document.getElementById("autoToggle"),l=document.getElementById("autoLabel");
-    if(SETTINGS.autoNotificationsEnabled){w.classList.add("on");l.textContent="Автоотправка: ВКЛ"}
-    else{w.classList.remove("on");l.textContent="Автоотправка: ВЫКЛ"}
+    if(!w||!l)return;
+    if(SETTINGS.autoNotificationsEnabled){w.classList.add("on")}else{w.classList.remove("on")};
+    l.textContent=SETTINGS.autoNotificationsEnabled?"Автоотправка: ВКЛ":"Автоотправка: ВЫКЛ";
 }
 async function toggleAuto(){
     SETTINGS=await api("/api/settings",{method:"PATCH",body:JSON.stringify({autoNotificationsEnabled:!SETTINGS.autoNotificationsEnabled})});
@@ -631,7 +689,8 @@ function toast(msg,err){
     const t=document.createElement("div");t.className="toast "+(err?"err":"ok");t.textContent=msg;
     document.body.appendChild(t);setTimeout(()=>t.remove(),2500)
 }
-document.addEventListener("DOMContentLoaded",()=>{const c=document.cookie.match(/s=([^;]+)/);if(c){T=c[1];login()}});
+
+document.addEventListener("DOMContentLoaded",()=>{const c=document.cookie.match(/secret=([^;]+)/);if(c){T=c[1];login()}});
 </script>
 </body>
 </html>
