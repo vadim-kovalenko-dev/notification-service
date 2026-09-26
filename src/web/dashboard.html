@@ -73,7 +73,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 20px; gap: 12px;
         }
-        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 600; color: var(--fg); white-space: nowrap; }
+        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 600; color: var(--fg); white-space: nowrap; }
         .topbar-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
         /* Buttons */
@@ -238,10 +238,10 @@
 
         /* Template page */
         .tpl-page { max-width: 640px; margin: 0 auto; padding: 24px 20px 60px; }
-        .tpl-header { margin-bottom: 24px; text-align: center; }
+        .tpl-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
         .tpl-header h2 { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 4px; color: var(--fg); }
-        .tpl-sub { font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; }
-        .tpl-nav { display: flex; gap: 8px; justify-content: center; }
+        .tpl-sub { font-size: 13px; color: var(--fg-muted); }
+        .tpl-nav { display: flex; gap: 8px; flex-wrap: wrap; }
         .tpl-grid { display: flex; flex-direction: column; gap: 20px; }
         .tpl-card { background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
         .tpl-card-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 10px; color: var(--fg); }
@@ -286,15 +286,15 @@
 
         /* Desktop: transparent topbar */
         @media (min-width: 641px) {
-            .topbar { background: transparent; border-bottom: none; height: auto; min-height: 48px; padding-top: 0; }
+            .topbar { background: transparent; border-bottom: none; height: auto; min-height: 48px; padding-top: 24px; }
         }
 
         /* ====== Mobile ====== */
         @media (max-width: 640px) {
             .content-wrapper { max-width: 100%; }
             .content-body { padding: 14px 10px 40px; }
-            .topbar { padding: 0 10px; flex-wrap: wrap; height: auto; min-height: 48px; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
-            .topbar-title { font-size: 14px; }
+            .topbar { padding: 16px 10px 0; flex-wrap: wrap; height: auto; min-height: 48px; gap: 8px; padding-bottom: 8px; }
+            .topbar-title { font-size: 18px; }
             .topbar-actions { width: 100%; flex-wrap: wrap; justify-content: flex-end; }
             .btn { padding: 5px 10px; font-size: 11px; }
             .cards { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
@@ -336,7 +336,7 @@
             .dp-pop { width: 240px; padding: 12px; }
             .tpl-page { padding: 16px 12px 40px; }
             .tpl-page h2 { font-size: 18px; margin-bottom: 4px; }
-            .tpl-sub { font-size: 12px; margin-bottom: 20px; }
+            .tpl-sub { font-size: 12px; }
             .tpl-card { padding: 12px; }
             .tpl-card-name { font-size: 12px; margin-bottom: 6px; }
             .tpl-card textarea { min-height: 90px; font-size: 12px; padding: 8px 10px; }
