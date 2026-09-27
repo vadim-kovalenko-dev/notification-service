@@ -536,7 +536,7 @@ function fmtActive(iso){
 }
 
 function buildRows(users){
-    const ss=s=>{const m={paid:["Активен","badge-active"],active:["Активен","badge-active"],expiring:["Истекает","badge-expiring"],expired:["Просрочен","badge-expired"],unpaid:["Без оплаты","badge-expired"]};const[l,c]=m[s]||["-","badge-free"];return`<span class="badge ${c}">${l}</span>`};
+    const ss=s=>{const m={paid:["Активен","badge-active"],active:["Активен","badge-active"],expiring:["Истекает","badge-expiring"],expired:["Просрочен","badge-expired"],unpaid:["Без оплаты","badge-active"]};const[l,c]=m[s]||["-","badge-free"];return`<span class="badge ${c}">${l}</span>`};
     const tg=(t,id,acc)=>{if(!acc){const c=t==="paid"?"badge-paid":"badge-free";return`<span class="badge ${c}">${t==="paid"?"Платный":"Бесплатный"}</span>`}const c=t==="paid"?"badge-paid":"badge-free";return`<span class="badge ${c}" onclick="tType(${id},'${t}')">${t==="paid"?"Платный":"Бесплатный"}</span>`};
     return users.map(u=>{
         const nm=(u.name||"").replace(/"/g,"&quot;");
@@ -638,10 +638,7 @@ function saveName(id,val){
 async function tType(id,cur){
     const n=cur==="paid"?"free":"paid";
     await api("/api/users/"+id+"/type",{method:"POST",body:JSON.stringify({type:n})});
-    const u=US.find(u=>u.id===id);if(u)u.type=n;
-    document.getElementById("sP").textContent=US.filter(u=>u.type==="paid"&&u.hasAccess).length;
-    document.getElementById("sF").textContent=US.filter(u=>u.type==="free"&&u.hasAccess).length;
-    fadeRender();
+    await lU();
     toast(n==="paid"?"Платный":"Бесплатный",0);
 }
 async function notifyAll(){

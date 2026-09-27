@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
-import type { Database, Payment, PaymentDB, User, NotificationLog, MessageTemplates, Settings } from "./types";
+import type { Database, Payment, PaymentDB, User, NotificationLog, MessageTemplates, Settings, UserType } from "./types";
 
 const DATA_DIR = join(import.meta.dir, "../../data");
 const MAIN_DB_PATH = join(import.meta.dir, "../../bot-data/database.json");

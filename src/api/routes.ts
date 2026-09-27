@@ -46,13 +46,15 @@ app.get("/api/users", (c) => {
 
         if (payment) {
             paidUntil = payment.paidUntil;
-            const until = new Date(payment.paidUntil);
-            if (until > now) {
-                const daysLeft = Math.ceil((until.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                if (daysLeft <= 3) status = "expiring";
-                else status = "paid";
-            } else {
-                status = "expired";
+            const until = payment.paidUntil ? new Date(payment.paidUntil) : null;
+            if (payment.type === "paid" && until && !isNaN(until.getTime())) {
+                if (until > now) {
+                    const daysLeft = Math.ceil((until.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                    if (daysLeft <= 3) status = "expiring";
+                    else status = "paid";
+                } else {
+                    status = "expired";
+                }
             }
         }
 
@@ -208,7 +210,8 @@ app.get("/api/stats", (c) => {
         if (!u.hasAccess) { noAccess++; continue; }
         const p = payments[u.id];
         if (!p) { unpaid++; continue; }
-        const until = new Date(p.paidUntil);
+        const until = p.paidUntil ? new Date(p.paidUntil) : null;
+        if (!until || isNaN(until.getTime())) { unpaid++; continue; }
         if (until < now) { expired++; continue; }
         const days = Math.ceil((until.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
         if (days <= 3) expiring++;
