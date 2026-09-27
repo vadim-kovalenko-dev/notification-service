@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WireGuard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -57,7 +57,7 @@
         /* Login */
         .login-page { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .login-card { background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px 36px; width: 100%; max-width: 340px; text-align: center; box-shadow: var(--shadow); }
-        .login-card h1 { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; color: var(--fg); }
+        .login-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; color: var(--fg); }
         .login-card .login-icon { font-size: 48px; color: var(--primary); margin-bottom: 12px; }
         .login-card p { font-size: 13px; color: var(--fg-muted); margin-bottom: 28px; }
         .login-card input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-1); color: var(--fg); font-size: 14px; font-family: inherit; outline: none; margin-bottom: 14px; transition: border-color 0.15s, box-shadow 0.15s; }
@@ -73,7 +73,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 20px; gap: 12px;
         }
-        .topbar-title { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 600; color: var(--fg); white-space: nowrap; }
+        .topbar-title { font-size: 20px; font-weight: 600; color: var(--fg); white-space: nowrap; }
         .topbar-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
         /* Buttons */
@@ -97,7 +97,7 @@
         .btn-danger:hover { opacity: 0.85; }
 
         /* Content */
-        .content-wrapper { min-height: 100vh; display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .content-wrapper { min-height: 100vh; display: flex; flex-direction: column; max-width: 1440px; margin: 0 auto; width: 100%; }
         .content-body { flex: 1; padding: 20px; }
         .main { }
 
@@ -117,21 +117,22 @@
         .stat-card .stat-row { display: flex; align-items: center; gap: 6px; }
         .stat-card .stat-icon { font-size: 20px; color: var(--fg-dim); flex-shrink: 0; }
         .stat-card .stat-label { font-size: 13px; color: var(--fg-muted); font-weight: 500; }
-        .stat-card .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; font-family: 'Unbounded', sans-serif; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 
         /* Table */
         .table-card { background: var(--surface-0); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
         .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; table-layout: fixed; min-width: 1230px; border-collapse: collapse; }
         thead th {
             padding: 11px 12px; font-size: 11px; color: var(--fg-dim); font-weight: 500;
             text-align: left; background: var(--surface-1); border-bottom: 1px solid var(--border);
             text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
-            position: sticky; top: 0; z-index: 1;
+            position: sticky; top: 0; z-index: 1; overflow: hidden;
         }
         tbody td {
             padding: 10px 12px; border-bottom: 1px solid var(--border);
             font-size: 13px; vertical-align: middle; height: 48px;
+            overflow: hidden;
             transition: background 0.1s ease;
         }
         tbody tr:last-child td { border-bottom: none; }
@@ -152,7 +153,7 @@
         }
         .user-info { overflow: hidden; min-width: 0; }
         .user-name { font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-id { font-size: 11px; color: var(--fg-dim); font-family: 'JetBrains Mono', monospace; }
+        .user-id { font-size: 11px; color: var(--fg-dim); font-variant-numeric: tabular-nums; }
 
         /* Badges */
         .badge {
@@ -239,7 +240,7 @@
         /* Template page */
         .tpl-page { max-width: 640px; margin: 0 auto; padding: 24px 20px 60px; }
         .tpl-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-        .tpl-header h2 { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 4px; color: var(--fg); }
+        .tpl-header h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: var(--fg); }
         .tpl-sub { font-size: 13px; color: var(--fg-muted); }
         .tpl-nav { display: flex; gap: 8px; flex-wrap: wrap; }
         .tpl-grid { display: flex; flex-direction: column; gap: 20px; }
@@ -248,12 +249,12 @@
         .tpl-card textarea {
             width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
             background: var(--surface-1); color: var(--fg); font-size: 13px;
-            font-family: 'JetBrains Mono', monospace; outline: none;
+            font-family: inherit; outline: none;
             min-height: 120px; resize: vertical; line-height: 1.6;
             transition: border-color 0.15s, box-shadow 0.15s;
         }
         .tpl-card textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--green-bg); }
-        .tpl-card textarea::placeholder { color: var(--fg-dim); font-family: 'Inter', sans-serif; }
+        .tpl-card textarea::placeholder { color: var(--fg-dim); font-family: inherit; }
 
         /* Toggle */
         .toggle-wrap {
@@ -304,17 +305,17 @@
 
             .table-card { border-radius: var(--radius-md); }
             .table-scroll { overflow-x: auto; }
-            table { table-layout: fixed; width: 100%; min-width: 920px; border-collapse: collapse; }
-            colgroup col:nth-child(1) { width: 16% !important; }
-            colgroup col:nth-child(2) { width: 12% !important; }
+            table { table-layout: fixed; width: 100%; min-width: 960px; border-collapse: collapse; }
+            colgroup col:nth-child(1) { width: 14% !important; }
+            colgroup col:nth-child(2) { width: 13% !important; }
             colgroup col:nth-child(3) { width: 11% !important; }
-            colgroup col:nth-child(4) { width: 5% !important; }
-            colgroup col:nth-child(5) { width: 17% !important; }
-            colgroup col:nth-child(6) { width: 14% !important; }
+            colgroup col:nth-child(4) { width: 5.5% !important; }
+            colgroup col:nth-child(5) { width: 15.5% !important; }
+            colgroup col:nth-child(6) { width: 12.5% !important; }
             colgroup col:nth-child(7) { width: 0 !important; display: none; }
-            colgroup col:nth-child(8) { width: 13% !important; }
-            colgroup col:nth-child(9) { width: 9% !important; }
-            colgroup col:nth-child(10) { width: 3% !important; }
+            colgroup col:nth-child(8) { width: 12% !important; }
+            colgroup col:nth-child(9) { width: 11.5% !important; }
+            colgroup col:nth-child(10) { width: 5% !important; }
             thead th { padding: 10px 8px; font-size: 11px; white-space: nowrap; }
             tbody td { padding: 10px 8px; font-size: 11px; white-space: nowrap; }
             thead th:nth-child(7) { display: none; }
@@ -390,9 +391,9 @@
                 <div class="table-scroll">
                     <table>
                         <colgroup>
-                            <col style="width:16%"><col style="width:11%"><col style="width:9%"><col style="width:5%">
-                            <col style="width:12%"><col style="width:12%"><col style="width:9%"><col style="width:11%">
-                            <col style="width:9%"><col style="width:6%">
+                            <col style="width:14%"><col style="width:15.5%"><col style="width:9%"><col style="width:6%">
+                            <col style="width:11%"><col style="width:11%"><col style="width:10%"><col style="width:9.5%">
+                            <col style="width:9%"><col style="width:5%">
                         </colgroup>
                         <thead><tr>
                             <th>Пользователь</th><th>Имя</th><th>Тип</th><th>Устр.</th>
